@@ -1,0 +1,53 @@
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active: dev
+  cache:
+    type: redis
+    redis:
+      time-to-live: 60s
+
+#  main:
+#    allow-circular-references: true
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.missuo.pojo.entity
+  configuration:
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    com:
+      missuo:
+        server:
+          mapper: debug
+          service: info
+          controller: info
+
+jwt:
+  # Setting the secret key used for jwt signature encryption
+  admin-secret-key: missuo
+  # Setting the jwt expiration time
+  admin-ttl: 7200000
+  # Set the name of the token passed from the front end
+  admin-token-name: token
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: com.missuo.server.controller
+
+knife4j:
+  enable: true
+  setting:
+    language: zh-CN
