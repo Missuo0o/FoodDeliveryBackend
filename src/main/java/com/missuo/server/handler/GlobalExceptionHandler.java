@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 public class GlobalExceptionHandler {
 
-  @ExceptionHandler(UserNotLoginException.class)
+  @ExceptionHandler({UserNotLoginException.class})
   public ResponseEntity<Result> userNotLoginExceptionHandler(UserNotLoginException ex) {
     log.error("Exception information：{}", ex.getMessage());
-    return new ResponseEntity<>(Result.unAuthorized(ex.getMessage()), HttpStatus.UNAUTHORIZED);
+    return new ResponseEntity<>(Result.unAuthorized(ex.getMessage()), HttpStatus.OK);
   }
 
   @ExceptionHandler(BaseException.class)
@@ -36,8 +36,7 @@ public class GlobalExceptionHandler {
       return new ResponseEntity<>(
           Result.error(message.split(" ")[2] + MessageConstant.ALREADY_EXISTS), HttpStatus.OK);
     } else {
-      return new ResponseEntity<>(
-          Result.error(MessageConstant.UNKNOWN_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(Result.error(MessageConstant.UNKNOWN_ERROR), HttpStatus.OK);
     }
   }
 }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.missuo.server.mapper.DishFlavorMapper">
+    <insert id="insertBatch" parameterType="com.missuo.pojo.entity.DishFlavor">
+        insert into dish_flavor
+        (dish_id, name, value) values
+        <foreach collection="flavors" item="item" separator=",">
+            (#{item.dishId}, #{item.name}, #{item.value})
+        </foreach>
+    </insert>
+</mapper>

@@ -27,7 +27,7 @@ public class Result implements Serializable {
   public static Result error(String msg) {
     Result result = new Result();
     result.msg = msg;
-    result.code = HttpStatus.INTERNAL_SERVER_ERROR.value();
+    result.code = HttpStatus.BAD_REQUEST.value();
     return result;
   }
 

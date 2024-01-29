@@ -1,6 +1,5 @@
 server:
   port: 8080
-
 spring:
   profiles:
     active: dev
@@ -8,6 +7,28 @@ spring:
     type: redis
     redis:
       time-to-live: 60s
+  datasource:
+    url: ${spring.datasource.url}
+    username: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    driver-class-name: ${spring.datasource.driver-class-name}
+    hikari:
+      connection-timeout: ${spring.datasource.driver-class-name.hikari.connection-timeout}
+
+  data:
+    redis:
+      host: ${spring.data.redis.host}
+      port: ${spring.data.redis.port}
+      password: ${spring.data.redis.password}
+      connect-timeout: ${spring.data.redis.connect-timeout}
+  rabbitmq:
+    host: ${spring.rabbitmq.host}
+    port: ${spring.rabbitmq.port}
+    username: ${spring.rabbitmq.username}
+    password: ${spring.rabbitmq.password}
+    listener:
+      simple:
+        prefetch: ${spring.rabbitmq.listener.simple.prefetch}
 
 #  main:
 #    allow-circular-references: true
@@ -49,5 +70,10 @@ springdoc:
 
 knife4j:
   enable: true
-  setting:
-    language: zh-CN
+
+alioss:
+  endpoint: ${alioss.endpoint}
+  access-key-id: ${alioss.access-key-id}
+  access-key-secret: ${alioss.access-key-secret}
+  bucket-name: ${alioss.bucket-name}
+
