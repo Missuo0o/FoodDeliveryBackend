@@ -7,4 +7,6 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface DishFlavorMapper {
   void insertBatch(List<DishFlavor> flavors);
+
+  void deleteBatchByDishIds(List<Long> ids);
 }

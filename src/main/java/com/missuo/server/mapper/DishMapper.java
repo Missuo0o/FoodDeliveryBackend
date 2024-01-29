@@ -1,8 +1,12 @@
 package com.missuo.server.mapper;
 
+import com.github.pagehelper.Page;
 import com.missuo.common.enumeration.OperationType;
+import com.missuo.pojo.dto.DishPageQueryDTO;
 import com.missuo.pojo.entity.Dish;
+import com.missuo.pojo.vo.DishVO;
 import com.missuo.server.annotation.AutoFill;
+import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -14,4 +18,10 @@ public interface DishMapper {
 
   @AutoFill(value = OperationType.INSERT)
   void insert(Dish dish);
+
+  Page<DishVO> pageQuery(DishPageQueryDTO dishPageQueryDTO);
+
+  List<Dish> getByIds(List<Long> id);
+
+  void deleteBatch(List<Long> ids);
 }

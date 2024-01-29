@@ -9,4 +9,39 @@
         values (#{name}, #{categoryId}, #{price}, #{image}, #{description}, #{status}, #{createTime}, #{updateTime},
                 #{createUser}, #{updateUser})
     </insert>
+
+    <delete id="deleteBatch">
+        delete from dish
+        where id in
+        <foreach collection="ids" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="pageQuery" resultType="com.missuo.pojo.vo.DishVO">
+        select d.*, c.name as categoryName
+        from dish d
+        left join category c on d.category_id = c.id
+        <where>
+            <if test="name != null and name != ''">
+                and d.name like concat('%', #{name}, '%')
+            </if>
+            <if test="categoryId != null">
+                and d.category_id = #{categoryId}
+            </if>
+            <if test="status != null">
+                and d.status = #{status}
+            </if>
+        </where>
+        order by d.create_time desc
+    </select>
+
+    <select id="getByIds" resultType="com.missuo.pojo.entity.Dish">
+        select *
+        from dish
+        where id in
+        <foreach collection="ids" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
 </mapper>

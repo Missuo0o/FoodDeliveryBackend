@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-/** Global exception handler to handle business exceptions thrown in the project */
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
@@ -19,7 +18,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler({UserNotLoginException.class})
   public ResponseEntity<Result> userNotLoginExceptionHandler(UserNotLoginException ex) {
     log.error("Exception information：{}", ex.getMessage());
-    return new ResponseEntity<>(Result.unAuthorized(ex.getMessage()), HttpStatus.OK);
+    return new ResponseEntity<>(Result.unAuthorized(ex.getMessage()), HttpStatus.UNAUTHORIZED);
   }
 
   @ExceptionHandler(BaseException.class)
