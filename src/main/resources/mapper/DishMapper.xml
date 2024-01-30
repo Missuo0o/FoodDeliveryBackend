@@ -75,4 +75,19 @@
             #{item}
         </foreach>
     </select>
+    <select id="list" resultType="com.missuo.pojo.entity.Dish">
+        select * from dish
+        <where>
+            <if test="name !=null and name != ''">
+                and name like concat('%', #{name}, '%')
+            </if>
+            <if test="categoryId != null">
+                and category_id = #{categoryId}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
 </mapper>

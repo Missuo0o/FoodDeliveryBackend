@@ -2,12 +2,56 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.missuo.server.mapper.SetmealDishMapper">
+    <insert id="insertBatch">
+        insert into setmeal_dish (setmeal_id, dish_id, name, price, copies) values
+        <foreach collection="setmealDishes" item="item" separator=",">
+            (#{item.setmealId}, #{item.dishId}, #{item.name}, #{item.price}, #{item.copies})
+        </foreach>
+    </insert>
+
+    <delete id="deleteBatchBySetmealIds">
+        delete from setmeal_dish
+        where setmeal_id in
+        <foreach collection="setmealIds" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
 
     <select id="getSetmealIdsByDishIds" resultType="java.lang.Long">
         select setmeal_id
         from setmeal_dish
         where dish_id in
         <foreach collection="dishIds" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="pageQuery" resultType="com.missuo.pojo.vo.SetmealVO">
+        select
+        s.*,c.name categoryName
+        from
+        setmeal s
+        left join
+        category c
+        on
+        s.category_id = c.id
+        <where>
+            <if test="name != null and name != ''">
+                and s.name like concat('%',#{name},'%')
+            </if>
+            <if test="status != null">
+                and s.status = #{status}
+            </if>
+            <if test="categoryId != null">
+                and s.category_id = #{categoryId}
+            </if>
+        </where>
+        order by s.create_time desc
+    </select>
+
+    <select id="getByIds" resultType="com.missuo.pojo.entity.Setmeal">
+        select * from setmeal where id in
+        <foreach collection="ids" item="item" open="(" close=")" separator=",">
             #{item}
         </foreach>
     </select>

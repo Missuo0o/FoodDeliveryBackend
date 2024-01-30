@@ -3,6 +3,7 @@ package com.missuo.server.service;
 import com.missuo.common.result.PageResult;
 import com.missuo.pojo.dto.DishDTO;
 import com.missuo.pojo.dto.DishPageQueryDTO;
+import com.missuo.pojo.entity.Dish;
 import com.missuo.pojo.vo.DishVO;
 import java.util.List;
 
@@ -19,4 +20,6 @@ public interface DishService {
   void updateWithFlavor(DishDTO dishDTO);
 
   void startOrStop(Integer status, Long id);
+
+  List<Dish> list(Long categoryId);
 }

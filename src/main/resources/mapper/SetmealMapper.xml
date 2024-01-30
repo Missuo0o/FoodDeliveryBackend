@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.missuo.server.mapper.SetmealMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into setmeal (category_id, name, price, description, image, create_time, update_time, create_user,
+                             update_user)
+        values (#{categoryId}, #{name}, #{price}, #{description}, #{image},
+                #{createTime}, #{updateTime}, #{createUser}, #{updateUser})
+    </insert>
+    <update id="update">
+        update setmeal
+        <set>
+            <if test="categoryId != null">
+                category_id = #{categoryId},
+            </if>
+            <if test="name != null and name !=''">
+                name = #{name},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="description != null">
+                description = #{description},
+            </if>
+            <if test="image != null and image!=''">
+                image = #{image},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+            <if test="status != null">
+                status = #{status}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBatch">
+        delete from setmeal
+        where id in
+        <foreach collection="ids" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+</mapper>

@@ -4,6 +4,7 @@ import com.missuo.common.result.PageResult;
 import com.missuo.common.result.Result;
 import com.missuo.pojo.dto.DishDTO;
 import com.missuo.pojo.dto.DishPageQueryDTO;
+import com.missuo.pojo.entity.Dish;
 import com.missuo.pojo.vo.DishVO;
 import com.missuo.server.service.DishService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,7 +37,7 @@ public class DishController {
     return Result.success(pageResult);
   }
 
-  @DeleteMapping()
+  @DeleteMapping
   @Operation(summary = "Delete Dish")
   public Result delete(@RequestParam("ids") List<Long> ids) {
     log.info("Delete Dish：{}", ids);
@@ -66,5 +67,12 @@ public class DishController {
     log.info("Start or Stop Dish：{},{}", status, id);
     dishService.startOrStop(status, id);
     return Result.success();
+  }
+
+  @GetMapping("/list")
+  @Operation(summary = "List Dish")
+  public Result list(Long categoryId) {
+    List<Dish> list = dishService.list(categoryId);
+    return Result.success(list);
   }
 }

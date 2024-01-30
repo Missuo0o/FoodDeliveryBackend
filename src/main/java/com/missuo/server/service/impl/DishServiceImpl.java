@@ -60,7 +60,13 @@ public class DishServiceImpl implements DishService {
   @Transactional
   public void deleteBatch(List<Long> ids) {
     // Presence of dishes on sale
+
     List<Dish> byIds = dishMapper.getByIds(ids);
+
+    if (byIds == null || byIds.isEmpty()) {
+      return;
+    }
+
     if (byIds.stream().anyMatch(dish -> Objects.equals(dish.getStatus(), StatusConstant.ENABLE))) {
       throw new DeletionNotAllowedException(MessageConstant.DISH_ON_SALE);
     }
@@ -89,6 +95,7 @@ public class DishServiceImpl implements DishService {
   }
 
   @Override
+  @Transactional
   public void updateWithFlavor(DishDTO dishDTO) {
     Dish dish = new Dish();
     BeanUtils.copyProperties(dishDTO, dish);
@@ -108,5 +115,11 @@ public class DishServiceImpl implements DishService {
   public void startOrStop(Integer status, Long id) {
     Dish dish = Dish.builder().id(id).status(status).build();
     dishMapper.update(dish);
+  }
+
+  @Override
+  public List<Dish> list(Long categoryId) {
+    Dish dish = Dish.builder().categoryId(categoryId).status(StatusConstant.ENABLE).build();
+    return dishMapper.list(dish);
   }
 }
