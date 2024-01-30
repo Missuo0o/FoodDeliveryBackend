@@ -5,7 +5,6 @@ import com.github.pagehelper.PageHelper;
 import com.missuo.common.constant.MessageConstant;
 import com.missuo.common.constant.PasswordConstant;
 import com.missuo.common.constant.StatusConstant;
-import com.missuo.common.context.BaseContext;
 import com.missuo.common.exception.AccountLockedException;
 import com.missuo.common.exception.AccountNotFoundException;
 import com.missuo.common.exception.PasswordErrorException;
@@ -16,7 +15,6 @@ import com.missuo.pojo.dto.EmployeePageQueryDTO;
 import com.missuo.pojo.entity.Employee;
 import com.missuo.server.mapper.EmployeeMapper;
 import com.missuo.server.service.EmployeeService;
-import java.time.LocalDateTime;
 import java.util.Objects;
 import org.apache.commons.codec.digest.Md5Crypt;
 import org.springframework.beans.BeanUtils;
@@ -94,13 +92,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
   @Override
   public void startOrStop(Integer status, Long id) {
-    Employee employee =
-        Employee.builder()
-            .id(id)
-            .status(status)
-            .updateTime(LocalDateTime.now())
-            .updateUser(BaseContext.getCurrentId())
-            .build();
+    Employee employee = Employee.builder().id(id).status(status).build();
 
     employeeMapper.update(employee);
   }

@@ -4,7 +4,6 @@ import com.missuo.pojo.entity.SetmealDish;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,5 +35,5 @@ public class SetmealVO implements Serializable {
 
   private String categoryName;
 
-  private List<SetmealDish> setmealDishes = new ArrayList<>();
+  private List<SetmealDish> setmealDishes;
 }

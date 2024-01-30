@@ -4,7 +4,6 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.missuo.common.constant.MessageConstant;
 import com.missuo.common.constant.StatusConstant;
-import com.missuo.common.context.BaseContext;
 import com.missuo.common.exception.DeletionNotAllowedException;
 import com.missuo.common.result.PageResult;
 import com.missuo.pojo.dto.CategoryDTO;
@@ -14,7 +13,6 @@ import com.missuo.server.mapper.CategoryMapper;
 import com.missuo.server.mapper.DishMapper;
 import com.missuo.server.mapper.SetmealMapper;
 import com.missuo.server.service.CategoryService;
-import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,13 +80,7 @@ public class CategoryServiceImpl implements CategoryService {
   }
 
   public void startOrStop(Integer status, Long id) {
-    Category category =
-        Category.builder()
-            .id(id)
-            .status(status)
-            .updateTime(LocalDateTime.now())
-            .updateUser(BaseContext.getCurrentId())
-            .build();
+    Category category = Category.builder().id(id).status(status).build();
     categoryMapper.update(category);
   }
 

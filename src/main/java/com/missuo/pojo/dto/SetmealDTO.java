@@ -3,7 +3,6 @@ package com.missuo.pojo.dto;
 import com.missuo.pojo.entity.SetmealDish;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
 
@@ -24,5 +23,5 @@ public class SetmealDTO implements Serializable {
 
   private String image;
 
-  private List<SetmealDish> setmealDishes = new ArrayList<>();
+  private List<SetmealDish> setmealDishes;
 }

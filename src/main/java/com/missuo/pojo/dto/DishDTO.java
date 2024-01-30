@@ -3,7 +3,6 @@ package com.missuo.pojo.dto;
 import com.missuo.pojo.entity.DishFlavor;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
 
@@ -24,5 +23,5 @@ public class DishDTO implements Serializable {
 
   private Integer status;
 
-  private List<DishFlavor> flavors = new ArrayList<>();
+  private List<DishFlavor> flavors;
 }

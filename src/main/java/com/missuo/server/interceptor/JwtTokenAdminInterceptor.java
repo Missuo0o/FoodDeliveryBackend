@@ -22,8 +22,8 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
   @Autowired private JwtProperties jwtProperties;
   @Autowired private JwtUtil jwtUtil;
 
-  public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-      throws Exception {
+  public boolean preHandle(
+      HttpServletRequest request, HttpServletResponse response, Object handler) {
     // Determine whether the currently intercepted method is the controller's method or other
     // resources
     if (!(handler instanceof HandlerMethod)) {

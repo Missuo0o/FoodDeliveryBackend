@@ -9,7 +9,7 @@
             (#{item.dishId}, #{item.name}, #{item.value})
         </foreach>
     </insert>
-    
+
     <delete id="deleteBatchByDishIds">
         delete from dish_flavor
         where dish_id in

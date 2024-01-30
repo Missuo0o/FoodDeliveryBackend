@@ -4,7 +4,6 @@ import com.missuo.pojo.entity.DishFlavor;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,7 +35,7 @@ public class DishVO implements Serializable {
 
   private String categoryName;
 
-  private List<DishFlavor> flavors = new ArrayList<>();
+  private List<DishFlavor> flavors;
 
   // private Integer copies;
 }
