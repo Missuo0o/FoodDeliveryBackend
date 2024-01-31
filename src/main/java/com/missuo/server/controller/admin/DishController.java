@@ -61,7 +61,7 @@ public class DishController {
     return Result.success();
   }
 
-  @PostMapping("/status/{status}")
+  @PutMapping("/status/{status}")
   @Operation(summary = "Start or Stop Dish")
   public Result startOrStop(@PathVariable("status") Integer status, Long id) {
     log.info("Start or Stop Dish：{},{}", status, id);

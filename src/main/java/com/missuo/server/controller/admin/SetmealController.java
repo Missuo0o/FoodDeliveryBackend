@@ -57,7 +57,7 @@ public class SetmealController {
     return Result.success();
   }
 
-  @PostMapping("/status/{status}")
+  @PutMapping("/status/{status}")
   @Operation(summary = "Start or Stop Setmeal")
   public Result startOrStop(@PathVariable Integer status, Long id) {
     setmealService.startOrStop(status, id);

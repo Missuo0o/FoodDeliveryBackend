@@ -77,7 +77,7 @@ public class EmployeeController {
     return Result.success(pageResult);
   }
 
-  @PostMapping("/status/{status}")
+  @PutMapping("/status/{status}")
   @Operation(summary = "Employee Start or Stop")
   public Result startOrStop(@PathVariable Integer status, Long id) {
     log.info("Employee Start or Stop: {},{}", status, id);

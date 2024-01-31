@@ -53,7 +53,7 @@ public class CategoryController {
     return Result.success();
   }
 
-  @PostMapping("/status/{status}")
+  @PutMapping("/status/{status}")
   @Operation(summary = "Start or Stop Category")
   public Result startOrStop(@PathVariable("status") Integer status, Long id) {
     log.info("Start or Stop Category：{},{}", status, id);
