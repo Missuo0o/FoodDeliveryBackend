@@ -1,5 +1,7 @@
 package com.missuo.server.controller.admin;
 
+import com.missuo.common.constant.MessageConstant;
+import com.missuo.common.exception.IllegalException;
 import com.missuo.common.result.PageResult;
 import com.missuo.common.result.Result;
 import com.missuo.pojo.dto.SetmealDTO;
@@ -11,6 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,7 +25,7 @@ public class SetmealController {
 
   @PostMapping
   @Operation(summary = "Add Setmeal")
-  public Result save(@RequestBody SetmealDTO setmealDTO) {
+  public Result save(@Validated @RequestBody SetmealDTO setmealDTO) {
     log.info("Add Setmeal：{}", setmealDTO);
     setmealService.saveWithDish(setmealDTO);
     return Result.success();
@@ -38,6 +41,9 @@ public class SetmealController {
   @DeleteMapping
   @Operation(summary = "Delete Setmeal")
   public Result delete(@RequestParam List<Long> ids) {
+    if (ids == null || ids.isEmpty()) {
+      throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
+    }
     setmealService.deleteBatch(ids);
     return Result.success();
   }
@@ -51,7 +57,7 @@ public class SetmealController {
 
   @PutMapping
   @Operation(summary = "Update Setmeal")
-  public Result update(@RequestBody SetmealDTO setmealDTO) {
+  public Result update(@Validated @RequestBody SetmealDTO setmealDTO) {
     log.info("Update Setmeal：{}", setmealDTO);
     setmealService.update(setmealDTO);
     return Result.success();
@@ -60,6 +66,9 @@ public class SetmealController {
   @PutMapping("/status/{status}")
   @Operation(summary = "Start or Stop Setmeal")
   public Result startOrStop(@PathVariable Integer status, Long id) {
+    if (status == null || (status != 1 && status != 0)) {
+      throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
+    }
     setmealService.startOrStop(status, id);
     return Result.success();
   }

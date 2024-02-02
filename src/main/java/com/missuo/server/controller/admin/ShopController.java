@@ -1,6 +1,8 @@
 package com.missuo.server.controller.admin;
 
+import com.missuo.common.constant.MessageConstant;
 import com.missuo.common.constant.RedisConstant;
+import com.missuo.common.exception.IllegalException;
 import com.missuo.common.result.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,6 +23,9 @@ public class ShopController {
   @PutMapping("/{status}")
   @Operation(summary = "Set Shop Status")
   public Result setStatus(@PathVariable Integer status) {
+    if (status == null || (status != 1 && status != 0)) {
+      throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
+    }
     log.info("Set Shop Status：{}", status == 1 ? "Open" : "Closed");
     redisTemplate.opsForValue().set(RedisConstant.REDIS_KEY, String.valueOf(status));
     return Result.success();

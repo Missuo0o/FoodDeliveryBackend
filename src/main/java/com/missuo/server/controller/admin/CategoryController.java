@@ -1,5 +1,7 @@
 package com.missuo.server.controller.admin;
 
+import com.missuo.common.constant.MessageConstant;
+import com.missuo.common.exception.IllegalException;
 import com.missuo.common.result.PageResult;
 import com.missuo.common.result.Result;
 import com.missuo.pojo.dto.CategoryDTO;
@@ -11,6 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,7 +26,7 @@ public class CategoryController {
 
   @PostMapping
   @Operation(summary = "Add Category")
-  public Result save(@RequestBody CategoryDTO categoryDTO) {
+  public Result save(@Validated @RequestBody CategoryDTO categoryDTO) {
     log.info("Add Category：{}", categoryDTO);
     categoryService.save(categoryDTO);
     return Result.success();
@@ -40,6 +43,9 @@ public class CategoryController {
   @DeleteMapping
   @Operation(summary = "Delete Category")
   public Result deleteById(Long id) {
+    if (id == null) {
+      throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
+    }
     log.info("Delete Category：{}", id);
     categoryService.deleteById(id);
     return Result.success();
@@ -47,7 +53,7 @@ public class CategoryController {
 
   @PutMapping
   @Operation(summary = "Update Category")
-  public Result update(@RequestBody CategoryDTO categoryDTO) {
+  public Result update(@Validated @RequestBody CategoryDTO categoryDTO) {
     log.info("Update Category：{}", categoryDTO);
     categoryService.update(categoryDTO);
     return Result.success();

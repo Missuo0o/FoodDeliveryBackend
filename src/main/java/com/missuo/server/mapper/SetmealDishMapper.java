@@ -21,11 +21,14 @@ public interface SetmealDishMapper {
 
   List<Setmeal> getByIds(List<Long> ids);
 
-  void deleteBatchBySetmealIds(List<Long> ids);
+  void deleteBatchBySetmealIds(List<Long> setmealIds);
 
   @Select("select * from setmeal_dish where setmeal_id = #{id}")
   List<SetmealDish> getBySetmealId(Long id);
 
   @Delete("delete from setmeal_dish where setmeal_id = #{id}")
   void deleteBySetmealId(Long id);
+
+  @Select("select * from setmeal_dish where dish_id = #{id}")
+  Setmeal getById(Long aLong);
 }

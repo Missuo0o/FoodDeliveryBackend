@@ -1,6 +1,8 @@
 package com.missuo.server.controller.admin;
 
 import com.missuo.common.constant.JwtClaimsConstant;
+import com.missuo.common.constant.MessageConstant;
+import com.missuo.common.exception.IllegalException;
 import com.missuo.common.properties.JwtProperties;
 import com.missuo.common.result.PageResult;
 import com.missuo.common.result.Result;
@@ -8,6 +10,7 @@ import com.missuo.common.utils.JwtUtil;
 import com.missuo.pojo.dto.EmployeeDTO;
 import com.missuo.pojo.dto.EmployeeLoginDTO;
 import com.missuo.pojo.dto.EmployeePageQueryDTO;
+import com.missuo.pojo.dto.PasswordEditDTO;
 import com.missuo.pojo.entity.Employee;
 import com.missuo.pojo.vo.EmployeeLoginVO;
 import com.missuo.server.service.EmployeeService;
@@ -18,6 +21,7 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,7 +36,7 @@ public class EmployeeController {
 
   @PostMapping("/login")
   @Operation(summary = "Employee Login")
-  public Result login(@RequestBody EmployeeLoginDTO employeeLoginDTO) {
+  public Result login(@Validated @RequestBody EmployeeLoginDTO employeeLoginDTO) {
     log.info("Employee Login：{}", employeeLoginDTO);
 
     Employee employee = employeeService.login(employeeLoginDTO);
@@ -62,7 +66,7 @@ public class EmployeeController {
 
   @PostMapping
   @Operation(summary = "Add Employee")
-  public Result save(@RequestBody EmployeeDTO employeeDTO) {
+  public Result save(@Validated @RequestBody EmployeeDTO employeeDTO) {
     log.info("Add Employee: {}", employeeDTO);
     employeeService.save(employeeDTO);
     return Result.success();
@@ -80,6 +84,9 @@ public class EmployeeController {
   @PutMapping("/status/{status}")
   @Operation(summary = "Employee Start or Stop")
   public Result startOrStop(@PathVariable Integer status, Long id) {
+    if (status == null || id == null || (status != 1 && status != 0)) {
+      throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
+    }
     log.info("Employee Start or Stop: {},{}", status, id);
     employeeService.startOrStop(status, id);
     return Result.success();
@@ -98,6 +105,14 @@ public class EmployeeController {
   public Result update(@RequestBody EmployeeDTO employeeDTO) {
     log.info("Employee Update: {}", employeeDTO);
     employeeService.update(employeeDTO);
+    return Result.success();
+  }
+
+  @PutMapping("/editPassword")
+  @Operation(summary = "Employee Update Password")
+  public Result editPassword(@RequestBody PasswordEditDTO passwordEditDTO) {
+    log.info("Employee Update Password: {}", passwordEditDTO);
+    employeeService.updatePassword(passwordEditDTO);
     return Result.success();
   }
 }

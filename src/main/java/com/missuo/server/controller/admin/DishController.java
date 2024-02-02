@@ -1,5 +1,7 @@
 package com.missuo.server.controller.admin;
 
+import com.missuo.common.constant.MessageConstant;
+import com.missuo.common.exception.IllegalException;
 import com.missuo.common.result.PageResult;
 import com.missuo.common.result.Result;
 import com.missuo.pojo.dto.DishDTO;
@@ -12,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -40,6 +43,9 @@ public class DishController {
   @DeleteMapping
   @Operation(summary = "Delete Dish")
   public Result delete(@RequestParam("ids") List<Long> ids) {
+    if (ids == null || ids.isEmpty()) {
+      throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
+    }
     log.info("Delete Dish：{}", ids);
     dishService.deleteBatch(ids);
     return Result.success();
@@ -55,7 +61,7 @@ public class DishController {
 
   @PutMapping
   @Operation(summary = "Update Dish")
-  public Result update(@RequestBody DishDTO dishDTO) {
+  public Result update(@Validated @RequestBody DishDTO dishDTO) {
     log.info("Update Dish：{}", dishDTO);
     dishService.updateWithFlavor(dishDTO);
     return Result.success();
@@ -64,6 +70,9 @@ public class DishController {
   @PutMapping("/status/{status}")
   @Operation(summary = "Start or Stop Dish")
   public Result startOrStop(@PathVariable("status") Integer status, Long id) {
+    if (status == null || (status != 1 && status != 0)) {
+      throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
+    }
     log.info("Start or Stop Dish：{},{}", status, id);
     dishService.startOrStop(status, id);
     return Result.success();
@@ -72,6 +81,9 @@ public class DishController {
   @GetMapping("/list")
   @Operation(summary = "List Dish")
   public Result list(Long categoryId) {
+    if (categoryId == null) {
+      throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
+    }
     List<Dish> list = dishService.list(categoryId);
     return Result.success(list);
   }

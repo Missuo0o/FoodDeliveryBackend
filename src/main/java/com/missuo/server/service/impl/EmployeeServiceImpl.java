@@ -5,13 +5,13 @@ import com.github.pagehelper.PageHelper;
 import com.missuo.common.constant.MessageConstant;
 import com.missuo.common.constant.PasswordConstant;
 import com.missuo.common.constant.StatusConstant;
-import com.missuo.common.exception.AccountLockedException;
-import com.missuo.common.exception.AccountNotFoundException;
-import com.missuo.common.exception.PasswordErrorException;
+import com.missuo.common.context.BaseContext;
+import com.missuo.common.exception.*;
 import com.missuo.common.result.PageResult;
 import com.missuo.pojo.dto.EmployeeDTO;
 import com.missuo.pojo.dto.EmployeeLoginDTO;
 import com.missuo.pojo.dto.EmployeePageQueryDTO;
+import com.missuo.pojo.dto.PasswordEditDTO;
 import com.missuo.pojo.entity.Employee;
 import com.missuo.server.mapper.EmployeeMapper;
 import com.missuo.server.service.EmployeeService;
@@ -106,15 +106,32 @@ public class EmployeeServiceImpl implements EmployeeService {
 
   @Override
   public void update(EmployeeDTO employeeDTO) {
+
     if (PasswordConstant.DEFAULT_USERNAME.equals(employeeDTO.getUsername())) {
-      return;
+      throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
+    } else {
+      Employee employee = new Employee();
+      BeanUtils.copyProperties(employeeDTO, employee);
+
+      employeeMapper.update(employee);
     }
-    Employee employee = new Employee();
-    BeanUtils.copyProperties(employeeDTO, employee);
+  }
 
-    //    employee.setUpdateTime(LocalDateTime.now());
-    //    employee.setUpdateUser(BaseContext.getCurrentId());
+  @Override
+  public void updatePassword(PasswordEditDTO passwordEditDTO) {
+    Long currentId = BaseContext.getCurrentId();
+    Employee employee = employeeMapper.getById(currentId);
 
-    employeeMapper.update(employee);
+    String oldPassword =
+        Md5Crypt.md5Crypt(passwordEditDTO.getOldPassword().getBytes(), "$1$ShunZhang");
+    if (!oldPassword.equals(employee.getPassword())) {
+      throw new PasswordEditFailedException(MessageConstant.PASSWORD_EDIT_FAILED);
+    }
+
+    String newPassword =
+        Md5Crypt.md5Crypt(passwordEditDTO.getNewPassword().getBytes(), "$1$ShunZhang");
+    Employee newEmployee = Employee.builder().id(currentId).password(newPassword).build();
+
+    employeeMapper.update(newEmployee);
   }
 }

@@ -24,4 +24,5 @@ public class MessageConstant {
       "Dish is related to combo, cannot be deleted";
   public static final String ORDER_STATUS_ERROR = "Order status error";
   public static final String ORDER_NOT_FOUND = "Order not found";
+  public static final String ILLEGAL_OPERATION = "Illegal operation";
 }

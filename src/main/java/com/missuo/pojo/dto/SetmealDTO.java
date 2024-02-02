@@ -1,6 +1,9 @@
 package com.missuo.pojo.dto;
 
 import com.missuo.pojo.entity.SetmealDish;
+import com.missuo.server.annotation.OneOrZeroValid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
@@ -11,17 +14,27 @@ public class SetmealDTO implements Serializable {
 
   private Long id;
 
+  @NotNull
+  @Size(min = 1)
   private Long categoryId;
 
+  @NotNull
+  @Size(min = 1, max = 20)
   private String name;
 
+  @NotNull
+  @Size(min = 1, max = 5)
   private BigDecimal price;
 
-  private Integer status;
+  @OneOrZeroValid private Integer status;
 
   private String description;
 
+  @NotNull
+  @Size(min = 1, max = 255)
   private String image;
 
+  @NotNull
+  @Size(min = 1)
   private List<SetmealDish> setmealDishes;
 }

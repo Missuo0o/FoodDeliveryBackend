@@ -66,7 +66,7 @@ public class SetmealServiceimpl implements SetmealService {
 
     if (byIds.stream()
         .anyMatch(setmeal -> Objects.equals(setmeal.getStatus(), StatusConstant.ENABLE))) {
-      throw new DeletionNotAllowedException(MessageConstant.DISH_ON_SALE);
+      throw new DeletionNotAllowedException(MessageConstant.SETMEAL_ON_SALE);
     }
 
     // Delete Combo

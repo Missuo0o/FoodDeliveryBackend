@@ -4,6 +4,7 @@ import com.missuo.common.result.PageResult;
 import com.missuo.pojo.dto.EmployeeDTO;
 import com.missuo.pojo.dto.EmployeeLoginDTO;
 import com.missuo.pojo.dto.EmployeePageQueryDTO;
+import com.missuo.pojo.dto.PasswordEditDTO;
 import com.missuo.pojo.entity.Employee;
 
 public interface EmployeeService {
@@ -19,4 +20,6 @@ public interface EmployeeService {
   Employee getById(Long id);
 
   void update(EmployeeDTO employeeDTO);
+
+  void updatePassword(PasswordEditDTO passwordEditDTO);
 }

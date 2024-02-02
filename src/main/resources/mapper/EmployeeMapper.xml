@@ -20,7 +20,7 @@
             <if test="sex != null">
                 sex = #{sex},
             </if>
-            <if test="idNumber != null">
+            <if test="idNumber != null and idNumber != ''">
                 id_number = #{idNumber},
             </if>
             <if test="updateTime != null">
