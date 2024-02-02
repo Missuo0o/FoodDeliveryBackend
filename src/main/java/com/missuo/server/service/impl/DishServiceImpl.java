@@ -63,9 +63,9 @@ public class DishServiceImpl implements DishService {
 
     List<Dish> byIds = dishMapper.getByIds(ids);
 
-    if (byIds == null || byIds.isEmpty()) {
-      return;
-    }
+    //    if (byIds == null || byIds.isEmpty()) {
+    //      return;
+    //    }
 
     if (byIds.stream().anyMatch(dish -> Objects.equals(dish.getStatus(), StatusConstant.ENABLE))) {
       throw new DeletionNotAllowedException(MessageConstant.DISH_ON_SALE);

@@ -43,9 +43,6 @@ public class CategoryController {
   @DeleteMapping
   @Operation(summary = "Delete Category")
   public Result deleteById(Long id) {
-    if (id == null) {
-      throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
-    }
     log.info("Delete Category：{}", id);
     categoryService.deleteById(id);
     return Result.success();
@@ -61,7 +58,10 @@ public class CategoryController {
 
   @PutMapping("/status/{status}")
   @Operation(summary = "Start or Stop Category")
-  public Result startOrStop(@PathVariable("status") Integer status, Long id) {
+  public Result startOrStop(@PathVariable Integer status, Long id) {
+    if (status != 1 && status != 0) {
+      throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
+    }
     log.info("Start or Stop Category：{},{}", status, id);
     categoryService.startOrStop(status, id);
     return Result.success();

@@ -59,11 +59,11 @@ public class SetmealServiceimpl implements SetmealService {
   @Transactional
   public void deleteBatch(List<Long> ids) {
     List<Setmeal> byIds = setmealDishMapper.getByIds(ids);
-    // Presence of dishes on sale
-    if (byIds == null || byIds.isEmpty()) {
-      return;
-    }
+    //    if (byIds == null || byIds.isEmpty()) {
+    //      return;
+    //    }
 
+    //     Presence of dishes on sale
     if (byIds.stream()
         .anyMatch(setmeal -> Objects.equals(setmeal.getStatus(), StatusConstant.ENABLE))) {
       throw new DeletionNotAllowedException(MessageConstant.SETMEAL_ON_SALE);

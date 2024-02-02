@@ -41,9 +41,6 @@ public class SetmealController {
   @DeleteMapping
   @Operation(summary = "Delete Setmeal")
   public Result delete(@RequestParam List<Long> ids) {
-    if (ids == null || ids.isEmpty()) {
-      throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
-    }
     setmealService.deleteBatch(ids);
     return Result.success();
   }
@@ -66,7 +63,7 @@ public class SetmealController {
   @PutMapping("/status/{status}")
   @Operation(summary = "Start or Stop Setmeal")
   public Result startOrStop(@PathVariable Integer status, Long id) {
-    if (status == null || (status != 1 && status != 0)) {
+    if (status != 1 && status != 0) {
       throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
     }
     setmealService.startOrStop(status, id);

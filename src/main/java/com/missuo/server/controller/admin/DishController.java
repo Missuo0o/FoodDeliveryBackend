@@ -43,9 +43,6 @@ public class DishController {
   @DeleteMapping
   @Operation(summary = "Delete Dish")
   public Result delete(@RequestParam("ids") List<Long> ids) {
-    if (ids == null || ids.isEmpty()) {
-      throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
-    }
     log.info("Delete Dish：{}", ids);
     dishService.deleteBatch(ids);
     return Result.success();
@@ -69,8 +66,8 @@ public class DishController {
 
   @PutMapping("/status/{status}")
   @Operation(summary = "Start or Stop Dish")
-  public Result startOrStop(@PathVariable("status") Integer status, Long id) {
-    if (status == null || (status != 1 && status != 0)) {
+  public Result startOrStop(@PathVariable Integer status, Long id) {
+    if (status != 1 && status != 0) {
       throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
     }
     log.info("Start or Stop Dish：{},{}", status, id);
@@ -81,9 +78,6 @@ public class DishController {
   @GetMapping("/list")
   @Operation(summary = "List Dish")
   public Result list(Long categoryId) {
-    if (categoryId == null) {
-      throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
-    }
     List<Dish> list = dishService.list(categoryId);
     return Result.success(list);
   }

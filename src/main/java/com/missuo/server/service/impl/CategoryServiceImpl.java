@@ -56,6 +56,7 @@ public class CategoryServiceImpl implements CategoryService {
   public void deleteById(Long id) {
     // Check whether the current category is associated with dishes
     Integer count = dishMapper.countByCategoryId(id);
+
     if (count > 0) {
       throw new DeletionNotAllowedException(MessageConstant.CATEGORY_BE_RELATED_BY_DISH);
     }
