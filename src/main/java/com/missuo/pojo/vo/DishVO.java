@@ -36,6 +36,4 @@ public class DishVO implements Serializable {
   private String categoryName;
 
   private List<DishFlavor> flavors;
-
-  // private Integer copies;
 }

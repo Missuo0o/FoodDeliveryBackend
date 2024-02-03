@@ -11,6 +11,7 @@ import com.missuo.pojo.dto.SetmealPageQueryDTO;
 import com.missuo.pojo.entity.Dish;
 import com.missuo.pojo.entity.Setmeal;
 import com.missuo.pojo.entity.SetmealDish;
+import com.missuo.pojo.vo.DishItemVO;
 import com.missuo.pojo.vo.SetmealVO;
 import com.missuo.server.mapper.DishMapper;
 import com.missuo.server.mapper.SetmealDishMapper;
@@ -116,5 +117,13 @@ public class SetmealServiceImpl implements SetmealService {
     }
     Setmeal setmeal = Setmeal.builder().id(id).status(status).build();
     setmealMapper.update(setmeal);
+  }
+
+  public List<Setmeal> list(Setmeal setmeal) {
+    return setmealMapper.list(setmeal);
+  }
+
+  public List<DishItemVO> getDishItemById(Long id) {
+    return setmealMapper.getDishItemBySetmealId(id);
   }
 }

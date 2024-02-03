@@ -279,7 +279,7 @@ CREATE TABLE `setmeal` (
 
 LOCK TABLES `setmeal` WRITE;
 /*!40000 ALTER TABLE `setmeal` DISABLE KEYS */;
-INSERT INTO `setmeal` VALUES (32,13,'Combo1',20.21,1,'test','https://missuo0o.oss-us-west-1.aliyuncs.com/823bbe13-96c6-4e82-b261-330675d2d4f1.jpeg','2024-01-30 02:07:27','2024-02-01 21:40:54',1,1);
+INSERT INTO `setmeal` VALUES (32,13,'Combo1',20.21,1,'test','https://missuo0o.oss-us-west-1.aliyuncs.com/823bbe13-96c6-4e82-b261-330675d2d4f1.jpeg','2024-01-30 02:07:27','2024-02-02 21:44:50',1,1);
 /*!40000 ALTER TABLE `setmeal` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -351,15 +351,15 @@ DROP TABLE IF EXISTS `user`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `openid` varchar(45) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
-  `name` varchar(12) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
-  `phone` varchar(10) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
-  `sex` tinyint unsigned NOT NULL,
-  `id_number` varchar(18) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
-  `avatar` varchar(500) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
+  `openid` varchar(45) COLLATE utf8mb3_bin NOT NULL,
+  `name` varchar(12) COLLATE utf8mb3_bin DEFAULT NULL,
+  `phone` varchar(10) COLLATE utf8mb3_bin DEFAULT NULL,
+  `sex` tinyint unsigned DEFAULT NULL,
+  `id_number` varchar(9) COLLATE utf8mb3_bin DEFAULT NULL,
+  `avatar` varchar(500) COLLATE utf8mb3_bin DEFAULT NULL,
   `create_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -388,4 +388,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-02-02  3:09:39
+-- Dump completed on 2024-02-03  2:48:03

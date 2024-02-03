@@ -47,11 +47,4 @@ public class GlobalExceptionHandler {
           Result.error(MessageConstant.UNKNOWN_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-
-  @ExceptionHandler(NullPointerException.class)
-  public ResponseEntity<Result> nullPointerExceptionHandler(NullPointerException ex) {
-    log.error("Exception information：{}", ex.getMessage());
-    return new ResponseEntity<>(
-        Result.error(MessageConstant.UNKNOWN_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
-  }
 }
