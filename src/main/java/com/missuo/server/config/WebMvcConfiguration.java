@@ -2,6 +2,7 @@ package com.missuo.server.config;
 
 import com.missuo.common.json.JacksonObjectMapper;
 import com.missuo.server.interceptor.JwtTokenAdminInterceptor;
+import com.missuo.server.interceptor.JwtTokenUserInterceptor;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import java.util.List;
@@ -21,6 +22,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
 public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 
   @Autowired private JwtTokenAdminInterceptor jwtTokenAdminInterceptor;
+  @Autowired private JwtTokenUserInterceptor jwtTokenUserInterceptor;
 
   protected void addInterceptors(InterceptorRegistry registry) {
     log.info("Start registering a custom interceptor...");
@@ -28,6 +30,11 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         .addInterceptor(jwtTokenAdminInterceptor)
         .addPathPatterns("/admin/**")
         .excludePathPatterns("/admin/employee/login");
+    registry
+        .addInterceptor(jwtTokenUserInterceptor)
+        .addPathPatterns("/user/**")
+        .excludePathPatterns("/user/user/login")
+        .excludePathPatterns("/user/shop/status");
   }
 
   @Bean

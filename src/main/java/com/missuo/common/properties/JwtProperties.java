@@ -12,12 +12,14 @@ public class JwtProperties {
   /** Configuration related to jwt token generation for employees on the management side */
   private String adminSecretKey;
 
-  private long adminTtl;
+  private Long adminTtl;
+
   private String adminTokenName;
 
   /** User-side WeChat user generation jwt token related configuration */
   private String userSecretKey;
 
-  private long userTtl;
+  private Long userTtl;
+
   private String userTokenName;
 }

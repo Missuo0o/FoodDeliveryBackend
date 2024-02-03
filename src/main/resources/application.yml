@@ -55,6 +55,10 @@ jwt:
   admin-ttl: 7200000
   # Set the name of the token passed from the front end
   admin-token-name: token
+  
+  user-secret-key: missuo0o
+  user-ttl: 7200000
+  user-token-name: authentication
 
 springdoc:
   swagger-ui:
@@ -77,3 +81,6 @@ alioss:
   access-key-secret: ${alioss.access-key-secret}
   bucket-name: ${alioss.bucket-name}
 
+wechat:
+  appid: ${wechat.appid}
+  secret: ${wechat.secret}

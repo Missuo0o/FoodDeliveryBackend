@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class SetmealServiceimpl implements SetmealService {
+public class SetmealServiceImpl implements SetmealService {
   @Autowired private SetmealMapper setmealMapper;
   @Autowired private SetmealDishMapper setmealDishMapper;
   @Autowired private DishMapper dishMapper;
