@@ -12,6 +12,8 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface CategoryMapper {
+  @AutoFill(value = OperationType.UPDATE)
+  void update(Category category);
 
   @Insert(
       "insert into category(type, name, sort, status, create_time, update_time, create_user, update_user)"
@@ -24,9 +26,6 @@ public interface CategoryMapper {
 
   @Delete("delete from category where id = #{id}")
   void deleteById(Long id);
-
-  @AutoFill(value = OperationType.UPDATE)
-  void update(Category category);
 
   List<Category> list(Integer type);
 }

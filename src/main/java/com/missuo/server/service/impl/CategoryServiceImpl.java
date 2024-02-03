@@ -25,6 +25,16 @@ public class CategoryServiceImpl implements CategoryService {
   @Autowired private DishMapper dishMapper;
   @Autowired private SetmealMapper setmealMapper;
 
+  public void update(CategoryDTO categoryDTO) {
+    Category category = new Category();
+    BeanUtils.copyProperties(categoryDTO, category);
+
+    //    category.setUpdateTime(LocalDateTime.now());
+    //    category.setUpdateUser(BaseContext.getCurrentId());
+
+    categoryMapper.update(category);
+  }
+
   public void save(CategoryDTO categoryDTO) {
     Category category = new Category();
     BeanUtils.copyProperties(categoryDTO, category);
@@ -68,16 +78,6 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     categoryMapper.deleteById(id);
-  }
-
-  public void update(CategoryDTO categoryDTO) {
-    Category category = new Category();
-    BeanUtils.copyProperties(categoryDTO, category);
-
-    //    category.setUpdateTime(LocalDateTime.now());
-    //    category.setUpdateUser(BaseContext.getCurrentId());
-
-    categoryMapper.update(category);
   }
 
   public void startOrStop(Integer status, Long id) {

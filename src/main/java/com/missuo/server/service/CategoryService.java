@@ -7,14 +7,13 @@ import com.missuo.pojo.entity.Category;
 import java.util.List;
 
 public interface CategoryService {
+  void update(CategoryDTO categoryDTO);
 
   void save(CategoryDTO categoryDTO);
 
   PageResult<Category> pageQuery(CategoryPageQueryDTO categoryPageQueryDTO);
 
   void deleteById(Long id);
-
-  void update(CategoryDTO categoryDTO);
 
   void startOrStop(Integer status, Long id);
 

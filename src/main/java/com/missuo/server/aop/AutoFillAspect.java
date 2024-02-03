@@ -19,8 +19,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class AutoFillAspect {
-  // Proxy objects do not inherit annotations, mybatis use proxy objects, so we can't annotate in
-  // the interface
+
   @Pointcut("@annotation(com.missuo.server.annotation.AutoFill)")
   public void autoFillPointCut() {}
 

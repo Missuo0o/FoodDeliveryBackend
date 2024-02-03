@@ -12,8 +12,10 @@ import com.missuo.server.service.DishService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,13 +24,15 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Dish Management")
 @Slf4j
 public class DishController {
+  @Autowired private RedisTemplate<Object, Object> redisTemplate;
   @Autowired private DishService dishService;
 
   @PostMapping
   @Operation(summary = "Add Dish")
-  public Result save(@RequestBody DishDTO dishDTO) {
+  public Result save(@Validated @RequestBody DishDTO dishDTO) {
     log.info("Add Dish：{}", dishDTO);
     dishService.saveWithFlavor(dishDTO);
+    cleanCache("dish_" + dishDTO.getCategoryId());
     return Result.success();
   }
 
@@ -45,6 +49,7 @@ public class DishController {
   public Result delete(@RequestParam("ids") List<Long> ids) {
     log.info("Delete Dish：{}", ids);
     dishService.deleteBatch(ids);
+    cleanCache("dish_*");
     return Result.success();
   }
 
@@ -61,6 +66,7 @@ public class DishController {
   public Result update(@Validated @RequestBody DishDTO dishDTO) {
     log.info("Update Dish：{}", dishDTO);
     dishService.updateWithFlavor(dishDTO);
+    cleanCache("dish_*");
     return Result.success();
   }
 
@@ -71,6 +77,7 @@ public class DishController {
       throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
     }
     log.info("Start or Stop Dish：{},{}", status, id);
+    cleanCache("dish_*");
     dishService.startOrStop(status, id);
     return Result.success();
   }
@@ -80,5 +87,12 @@ public class DishController {
   public Result list(Long categoryId) {
     List<Dish> list = dishService.list(categoryId);
     return Result.success(list);
+  }
+
+  private void cleanCache(String pattern) {
+    Set<Object> keys = redisTemplate.keys(pattern);
+    if (keys != null && !keys.isEmpty()) {
+      redisTemplate.delete(keys);
+    }
   }
 }
