@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Dish Management")
 @Slf4j
 public class DishController {
-  @Autowired private RedisTemplate<Object, Object> redisTemplate;
   @Autowired private DishService dishService;
+  @Autowired private RedisTemplate<Object, Object> redisTemplate;
 
   @PostMapping
   @Operation(summary = "Add Dish")

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class ShopController {
 
-  @Autowired private RedisTemplate<String, String> redisTemplate;
+  @Autowired private RedisTemplate<Object, Object> redisTemplate;
 
   @PutMapping("/{status}")
   @Operation(summary = "Set Shop Status")
@@ -27,16 +27,14 @@ public class ShopController {
       throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
     }
     log.info("Set Shop Status：{}", status == 1 ? "Open" : "Closed");
-    redisTemplate.opsForValue().set(RedisConstant.REDIS_KEY, String.valueOf(status));
+    redisTemplate.opsForValue().set(RedisConstant.REDIS_KEY, status);
     return Result.success();
   }
 
   @GetMapping("/status")
   @Operation(summary = "Get Shop Status")
   public Result getStatus() {
-    Integer status =
-        Integer.valueOf(
-            Objects.requireNonNull(redisTemplate.opsForValue().get(RedisConstant.REDIS_KEY)));
+    Integer status = (Integer) redisTemplate.opsForValue().get(RedisConstant.REDIS_KEY);
     log.info("Set Shop Status：{}", Objects.equals(status, 1) ? "Open" : "Closed");
     return Result.success(status);
   }

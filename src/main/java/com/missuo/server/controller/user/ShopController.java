@@ -16,14 +16,12 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class ShopController {
 
-  @Autowired private RedisTemplate<String, String> redisTemplate;
+  @Autowired private RedisTemplate<Object, Object> redisTemplate;
 
   @GetMapping("/status")
   @Operation(summary = "Get Shop Status")
   public Result getStatus() {
-    Integer status =
-        Integer.valueOf(
-            Objects.requireNonNull(redisTemplate.opsForValue().get(RedisConstant.REDIS_KEY)));
+    Integer status = (Integer) redisTemplate.opsForValue().get(RedisConstant.REDIS_KEY);
     log.info("Set Shop Status：{}", Objects.equals(status, 1) ? "Open" : "Closed");
     return Result.success(status);
   }
