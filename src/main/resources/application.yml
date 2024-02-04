@@ -3,10 +3,10 @@ server:
 spring:
   profiles:
     active: dev
-  cache:
-    type: redis
-    redis:
-      time-to-live: 60s
+  #  cache:
+  #    type: redis
+  #    redis:
+  #      time-to-live: 60s
   datasource:
     url: ${spring.datasource.url}
     username: ${spring.datasource.username}

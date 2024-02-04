@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,7 @@ public class SetmealController {
 
   @PostMapping
   @Operation(summary = "Add Setmeal")
+  @CacheEvict(value = "setmealCache", key = "#setmealDTO.categoryId")
   public Result save(@Validated @RequestBody SetmealDTO setmealDTO) {
     log.info("Add Setmeal：{}", setmealDTO);
     setmealService.saveWithDish(setmealDTO);
@@ -40,6 +42,7 @@ public class SetmealController {
 
   @DeleteMapping
   @Operation(summary = "Delete Setmeal")
+  @CacheEvict(value = "setmealCache", allEntries = true)
   public Result delete(@RequestParam List<Long> ids) {
     setmealService.deleteBatch(ids);
     return Result.success();
@@ -54,6 +57,7 @@ public class SetmealController {
 
   @PutMapping
   @Operation(summary = "Update Setmeal")
+  @CacheEvict(value = "setmealCache", allEntries = true)
   public Result update(@Validated @RequestBody SetmealDTO setmealDTO) {
     log.info("Update Setmeal：{}", setmealDTO);
     setmealService.update(setmealDTO);
@@ -62,6 +66,7 @@ public class SetmealController {
 
   @PutMapping("/status/{status}")
   @Operation(summary = "Start or Stop Setmeal")
+  @CacheEvict(value = "setmealCache", allEntries = true)
   public Result startOrStop(@PathVariable Integer status, Long id) {
     if (status != 1 && status != 0) {
       throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
