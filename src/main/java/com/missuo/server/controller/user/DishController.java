@@ -41,9 +41,7 @@ public class DishController {
     dish.setStatus(StatusConstant.ENABLE);
 
     list = dishService.listWithFlavor(dish);
-    System.out.println(key);
     redisTemplate.opsForValue().set(key, list);
-    System.out.println(redisTemplate.opsForValue().get(key));
 
     return Result.success(list);
   }
