@@ -47,6 +47,7 @@ public class ShoppingCartController {
   @Operation(summary = "Empty Shopping Cart")
   public Result clean() {
     log.info("Empty Shopping Cart");
+
     shoppingCartService.cleanShoppingCart();
     return Result.success();
   }
