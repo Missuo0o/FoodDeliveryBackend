@@ -11,8 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DishFlavor implements Serializable {
-
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1;
 
   private Long id;
 
