@@ -22,8 +22,8 @@ public class SetmealDTO implements Serializable {
   private String name;
 
   @NotNull
-  @DecimalMin(value = "1")
-  @DecimalMax(value = "99999")
+  @DecimalMin(value = "1.00")
+  @DecimalMax(value = "99999.99")
   private BigDecimal price;
 
   @OneOrZeroValid private Integer status;

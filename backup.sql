@@ -32,7 +32,7 @@ CREATE TABLE `address_book` (
   `label` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `is_default` tinyint unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +41,7 @@ CREATE TABLE `address_book` (
 
 LOCK TABLES `address_book` WRITE;
 /*!40000 ALTER TABLE `address_book` DISABLE KEYS */;
-INSERT INTO `address_book` VALUES (4,6,'Jay',0,'12345678','test','1',1);
+INSERT INTO `address_book` VALUES (4,6,'Jay',0,'12345678','test','1',1),(5,7,'Jay',0,'1234567890','NY','2',1);
 /*!40000 ALTER TABLE `address_book` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -181,16 +181,16 @@ DROP TABLE IF EXISTS `order_detail`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `order_detail` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `name` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
-  `image` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
+  `name` varchar(32) COLLATE utf8mb3_bin NOT NULL,
+  `image` varchar(255) COLLATE utf8mb3_bin NOT NULL,
   `order_id` bigint NOT NULL,
   `dish_id` bigint DEFAULT NULL,
   `setmeal_id` bigint DEFAULT NULL,
   `dish_flavor` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
   `number` int unsigned NOT NULL DEFAULT '1',
-  `amount` decimal(10,2) NOT NULL,
+  `amount` decimal(7,2) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -199,6 +199,7 @@ CREATE TABLE `order_detail` (
 
 LOCK TABLES `order_detail` WRITE;
 /*!40000 ALTER TABLE `order_detail` DISABLE KEYS */;
+INSERT INTO `order_detail` VALUES (5,'shrimp','https://missuo0o.oss-us-west-1.aliyuncs.com/a3f890da-b30c-4d87-860a-132ac994b022.jpeg',4,71,NULL,'No Sugar',1,12.50),(6,'Combo1','https://missuo0o.oss-us-west-1.aliyuncs.com/823bbe13-96c6-4e82-b261-330675d2d4f1.jpeg',4,NULL,32,NULL,1,20.21),(7,'Combo1','https://missuo0o.oss-us-west-1.aliyuncs.com/823bbe13-96c6-4e82-b261-330675d2d4f1.jpeg',5,NULL,32,NULL,1,20.21),(8,'Combo1','https://missuo0o.oss-us-west-1.aliyuncs.com/823bbe13-96c6-4e82-b261-330675d2d4f1.jpeg',6,NULL,32,NULL,1,20.21),(9,'Combo1','https://missuo0o.oss-us-west-1.aliyuncs.com/823bbe13-96c6-4e82-b261-330675d2d4f1.jpeg',7,NULL,32,NULL,1,20.21);
 /*!40000 ALTER TABLE `order_detail` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -220,10 +221,10 @@ CREATE TABLE `orders` (
   `pay_method` tinyint unsigned NOT NULL DEFAULT '1',
   `pay_status` tinyint unsigned NOT NULL DEFAULT '0',
   `amount` decimal(7,2) NOT NULL,
-  `remark` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
+  `remark` varchar(50) COLLATE utf8mb3_bin DEFAULT NULL,
   `phone` varchar(10) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
   `address` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
-  `user_name` varchar(12) COLLATE utf8mb3_bin NOT NULL,
+  `user_name` varchar(12) COLLATE utf8mb3_bin DEFAULT NULL,
   `consignee` varchar(12) COLLATE utf8mb3_bin NOT NULL,
   `cancel_reason` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
   `rejection_reason` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
@@ -235,7 +236,7 @@ CREATE TABLE `orders` (
   `tableware_number` tinyint unsigned NOT NULL,
   `tableware_status` tinyint unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -244,6 +245,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
+INSERT INTO `orders` VALUES (4,'1707346345908',1,7,5,'2024-02-07 17:52:26',NULL,1,0,40.71,'','1234567890','NY',NULL,'Jay',NULL,NULL,NULL,'2024-02-07 18:52:00',0,NULL,2,0,0),(5,'1707347698685',1,7,5,'2024-02-07 18:14:59',NULL,1,0,27.21,'','1234567890','NY',NULL,'Jay',NULL,NULL,NULL,'2024-02-07 19:14:00',0,NULL,1,0,0),(6,'1707348271519',1,7,5,'2024-02-07 18:24:32',NULL,1,0,27.21,'','1234567890','NY',NULL,'Jay',NULL,NULL,NULL,'2024-02-07 19:24:00',0,NULL,1,0,0),(7,'1707348337707',1,7,5,'2024-02-07 18:25:38',NULL,1,0,27.21,'','1234567890','NY',NULL,'Jay',NULL,NULL,NULL,'2024-02-07 19:25:00',0,NULL,1,0,0);
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -328,7 +330,7 @@ CREATE TABLE `shopping_cart` (
   `amount` decimal(7,2) NOT NULL,
   `create_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -357,7 +359,7 @@ CREATE TABLE `user` (
   `avatar` varchar(500) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
   `create_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -378,4 +380,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-02-06  6:27:40
+-- Dump completed on 2024-02-07 23:33:19
