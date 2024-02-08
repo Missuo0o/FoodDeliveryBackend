@@ -65,7 +65,7 @@ public class PayNotifyController {
     String associatedData = resource.getString("associated_data");
 
     AesUtil aesUtil = new AesUtil(weChatProperties.getApiV3Key().getBytes(StandardCharsets.UTF_8));
-    // 密文解密
+    // Decrypt the data
     String plainText =
         aesUtil.decryptToString(
             associatedData.getBytes(StandardCharsets.UTF_8),

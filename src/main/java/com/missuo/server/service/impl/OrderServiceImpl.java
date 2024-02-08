@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.missuo.common.constant.MessageConstant;
 import com.missuo.common.context.BaseContext;
 import com.missuo.common.exception.AddressBookBusinessException;
+import com.missuo.common.exception.IllegalException;
 import com.missuo.common.exception.OrderBusinessException;
 import com.missuo.common.exception.ShoppingCartBusinessException;
 import com.missuo.common.utils.WeChatPayUtil;
@@ -14,7 +15,6 @@ import com.missuo.pojo.vo.OrderPaymentVO;
 import com.missuo.pojo.vo.OrderSubmitVO;
 import com.missuo.server.mapper.*;
 import com.missuo.server.service.OrderService;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.BeanUtils;
@@ -93,11 +93,16 @@ public class OrderServiceImpl implements OrderService {
     Long userId = BaseContext.getCurrentId();
     User user = userMapper.getById(userId);
 
-    BigDecimal amount = orderMapper.getByNumber(ordersPaymentDTO.getOrderNumber()).getAmount();
+    Orders orders = orderMapper.getByNumber(ordersPaymentDTO.getOrderNumber());
+
+    if (orders == null) {
+      throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
+    }
 
     // Call the WeChat payment interface
     JSONObject jsonObject =
-        weChatPayUtil.pay(ordersPaymentDTO.getOrderNumber(), amount, "Missuo", user.getOpenid());
+        weChatPayUtil.pay(
+            ordersPaymentDTO.getOrderNumber(), orders.getAmount(), "Missuo", user.getOpenid());
 
     if (jsonObject.getString("code") != null && jsonObject.getString("code").equals("ORDERPAID")) {
       throw new OrderBusinessException("This order has been paid");
