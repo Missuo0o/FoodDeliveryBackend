@@ -1,10 +1,12 @@
 package com.missuo.server.controller.user;
 
+import com.missuo.common.result.PageResult;
 import com.missuo.common.result.Result;
 import com.missuo.pojo.dto.OrdersPaymentDTO;
 import com.missuo.pojo.dto.OrdersSubmitDTO;
 import com.missuo.pojo.vo.OrderPaymentVO;
 import com.missuo.pojo.vo.OrderSubmitVO;
+import com.missuo.pojo.vo.OrderVO;
 import com.missuo.server.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,5 +37,13 @@ public class OrderController {
     log.info("Payment: {}", ordersPaymentDTO);
     OrderPaymentVO orderPaymentVO = orderService.payment(ordersPaymentDTO);
     return Result.success(orderPaymentVO);
+  }
+
+  @GetMapping("/historyOrders")
+  @Operation(summary = "history orders")
+  public Result page(int page, int pageSize, Integer status) {
+    log.info("History orders");
+    PageResult<OrderVO> pageResult = orderService.pageQuery(page, pageSize, status);
+    return Result.success(pageResult);
   }
 }

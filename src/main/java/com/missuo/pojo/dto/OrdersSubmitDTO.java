@@ -33,6 +33,10 @@ public class OrdersSubmitDTO implements Serializable {
   @OneOrZeroValid private Integer tablewareStatus;
 
   @NotNull
+  @Range(min = 0, max = 10)
+  private Integer tablewareNumber;
+
+  @NotNull
   @Range(min = 1, max = 10)
   private Integer packAmount;
 

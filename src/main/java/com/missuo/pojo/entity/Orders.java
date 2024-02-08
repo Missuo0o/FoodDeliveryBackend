@@ -70,9 +70,9 @@ public class Orders implements Serializable {
 
   private LocalDateTime deliveryTime;
 
-  private int packAmount;
+  private Integer packAmount;
 
-  private int tablewareNumber;
+  private Integer tablewareNumber;
 
   // 1 Provided by meal size 0 Select specific quantity
   private Integer tablewareStatus;

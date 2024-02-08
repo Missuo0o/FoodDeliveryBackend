@@ -1,22 +1,28 @@
 package com.missuo.server.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.missuo.common.constant.MessageConstant;
 import com.missuo.common.context.BaseContext;
 import com.missuo.common.exception.AddressBookBusinessException;
 import com.missuo.common.exception.IllegalException;
 import com.missuo.common.exception.OrderBusinessException;
 import com.missuo.common.exception.ShoppingCartBusinessException;
+import com.missuo.common.result.PageResult;
 import com.missuo.common.utils.WeChatPayUtil;
+import com.missuo.pojo.dto.OrdersPageQueryDTO;
 import com.missuo.pojo.dto.OrdersPaymentDTO;
 import com.missuo.pojo.dto.OrdersSubmitDTO;
 import com.missuo.pojo.entity.*;
 import com.missuo.pojo.vo.OrderPaymentVO;
 import com.missuo.pojo.vo.OrderSubmitVO;
+import com.missuo.pojo.vo.OrderVO;
 import com.missuo.server.mapper.*;
 import com.missuo.server.service.OrderService;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,6 +57,7 @@ public class OrderServiceImpl implements OrderService {
     // Create an order
     Orders orders = new Orders();
     BeanUtils.copyProperties(ordersSubmitDTO, orders);
+
     orders.setOrderTime(LocalDateTime.now());
     orders.setPayStatus(Orders.UN_PAID);
     orders.setStatus(Orders.PENDING_PAYMENT);
@@ -128,5 +135,32 @@ public class OrderServiceImpl implements OrderService {
             .build();
 
     orderMapper.update(orders);
+  }
+
+  @Override
+  public PageResult<OrderVO> pageQuery(int page, int pageSize, Integer status) {
+    PageHelper.startPage(page, pageSize);
+
+    OrdersPageQueryDTO ordersPageQueryDTO = new OrdersPageQueryDTO();
+    ordersPageQueryDTO.setUserId(BaseContext.getCurrentId());
+    ordersPageQueryDTO.setStatus(status);
+    Page<Orders> pages = orderMapper.pageQuery(ordersPageQueryDTO);
+
+    List<OrderVO> list =
+        pages.stream()
+            .map(
+                orders -> {
+                  Long orderId = orders.getId();
+                  List<OrderDetail> orderDetails = orderDetailMapper.getByOrderId(orderId);
+
+                  OrderVO orderVO = new OrderVO();
+                  BeanUtils.copyProperties(orders, orderVO);
+                  orderVO.setOrderDetailList(orderDetails);
+
+                  return orderVO;
+                })
+            .collect(Collectors.toList());
+
+    return new PageResult<>(pages.getTotal(), list);
   }
 }

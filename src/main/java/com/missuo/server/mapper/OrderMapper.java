@@ -1,5 +1,7 @@
 package com.missuo.server.mapper;
 
+import com.github.pagehelper.Page;
+import com.missuo.pojo.dto.OrdersPageQueryDTO;
 import com.missuo.pojo.entity.Orders;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -12,4 +14,6 @@ public interface OrderMapper {
   Orders getByNumber(String orderNumber);
 
   void update(Orders orders);
+
+  Page<Orders> pageQuery(OrdersPageQueryDTO ordersPageQueryDTO);
 }
