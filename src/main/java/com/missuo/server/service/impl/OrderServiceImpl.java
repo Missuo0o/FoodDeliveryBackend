@@ -1,20 +1,20 @@
 package com.missuo.server.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.missuo.common.constant.MessageConstant;
 import com.missuo.common.context.BaseContext;
 import com.missuo.common.exception.AddressBookBusinessException;
+import com.missuo.common.exception.OrderBusinessException;
 import com.missuo.common.exception.ShoppingCartBusinessException;
+import com.missuo.common.utils.WeChatPayUtil;
+import com.missuo.pojo.dto.OrdersPaymentDTO;
 import com.missuo.pojo.dto.OrdersSubmitDTO;
-import com.missuo.pojo.entity.AddressBook;
-import com.missuo.pojo.entity.OrderDetail;
-import com.missuo.pojo.entity.Orders;
-import com.missuo.pojo.entity.ShoppingCart;
+import com.missuo.pojo.entity.*;
+import com.missuo.pojo.vo.OrderPaymentVO;
 import com.missuo.pojo.vo.OrderSubmitVO;
-import com.missuo.server.mapper.AddressBookMapper;
-import com.missuo.server.mapper.OrderDetailMapper;
-import com.missuo.server.mapper.OrderMapper;
-import com.missuo.server.mapper.ShoppingCartMapper;
+import com.missuo.server.mapper.*;
 import com.missuo.server.service.OrderService;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.BeanUtils;
@@ -28,6 +28,8 @@ public class OrderServiceImpl implements OrderService {
   @Autowired private OrderDetailMapper orderDetailMapper;
   @Autowired private AddressBookMapper addressBookMapper;
   @Autowired private ShoppingCartMapper shoppingCartMapper;
+  @Autowired private WeChatPayUtil weChatPayUtil;
+  @Autowired private UserMapper userMapper;
 
   @Override
   @Transactional
@@ -84,5 +86,42 @@ public class OrderServiceImpl implements OrderService {
         .orderNumber(orders.getNumber())
         .orderAmount(orders.getAmount())
         .build();
+  }
+
+  public OrderPaymentVO payment(OrdersPaymentDTO ordersPaymentDTO) throws Exception {
+    // Get the user's openid
+    Long userId = BaseContext.getCurrentId();
+    User user = userMapper.getById(userId);
+
+    BigDecimal amount = orderMapper.getByNumber(ordersPaymentDTO.getOrderNumber()).getAmount();
+
+    // Call the WeChat payment interface
+    JSONObject jsonObject =
+        weChatPayUtil.pay(ordersPaymentDTO.getOrderNumber(), amount, "Missuo", user.getOpenid());
+
+    if (jsonObject.getString("code") != null && jsonObject.getString("code").equals("ORDERPAID")) {
+      throw new OrderBusinessException("This order has been paid");
+    }
+
+    OrderPaymentVO vo = jsonObject.toJavaObject(OrderPaymentVO.class);
+    vo.setPackageStr(jsonObject.getString("package"));
+
+    return vo;
+  }
+
+  public void paySuccess(String outTradeNo) {
+    // Update order status
+    Orders ordersDB = orderMapper.getByNumber(outTradeNo);
+
+    // If the order status is not paid, update the order status
+    Orders orders =
+        Orders.builder()
+            .id(ordersDB.getId())
+            .status(Orders.TO_BE_CONFIRMED)
+            .payStatus(Orders.PAID)
+            .checkoutTime(LocalDateTime.now())
+            .build();
+
+    orderMapper.update(orders);
   }
 }
