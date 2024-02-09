@@ -103,6 +103,9 @@ public class EmployeeController {
   @PutMapping
   @Operation(summary = "Employee Update")
   public Result update(@RequestBody EmployeeDTO employeeDTO) {
+    if (employeeDTO.getId() == null) {
+      throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
+    }
     log.info("Employee Update: {}", employeeDTO);
     employeeService.update(employeeDTO);
     return Result.success();

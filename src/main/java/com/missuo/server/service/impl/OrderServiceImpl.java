@@ -11,11 +11,10 @@ import com.missuo.common.exception.OrderBusinessException;
 import com.missuo.common.exception.ShoppingCartBusinessException;
 import com.missuo.common.result.PageResult;
 import com.missuo.common.utils.WeChatPayUtil;
-import com.missuo.pojo.dto.OrdersPageQueryDTO;
-import com.missuo.pojo.dto.OrdersPaymentDTO;
-import com.missuo.pojo.dto.OrdersSubmitDTO;
+import com.missuo.pojo.dto.*;
 import com.missuo.pojo.entity.*;
 import com.missuo.pojo.vo.OrderPaymentVO;
+import com.missuo.pojo.vo.OrderStatisticsVO;
 import com.missuo.pojo.vo.OrderSubmitVO;
 import com.missuo.pojo.vo.OrderVO;
 import com.missuo.server.mapper.*;
@@ -162,5 +161,199 @@ public class OrderServiceImpl implements OrderService {
             .collect(Collectors.toList());
 
     return new PageResult<>(pages.getTotal(), list);
+  }
+
+  @Override
+  public OrderVO details(Long id) {
+    // Get the order information
+    Orders orders = orderMapper.getById(id);
+    if (orders == null) {
+      throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+    }
+    // Get the order details
+    List<OrderDetail> orderDetails = orderDetailMapper.getByOrderId(orders.getId());
+
+    OrderVO orderVO = new OrderVO();
+    BeanUtils.copyProperties(orders, orderVO);
+    orderVO.setOrderDetailList(orderDetails);
+    return orderVO;
+  }
+
+  @Override
+  public void userCancelById(Long id) throws Exception {
+    // Get the order information
+    Orders orders = orderMapper.getById(id);
+
+    //    Verify whether the order exists
+    if (orders == null) {
+      throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+    }
+
+    // Order status 1 Pending payment 2 Pending order 3 Received order 4 Delivery 5 Completed 6
+    // Canceled //Order status 1 Pending payment 2 Pending order 3 Order received 4 Delivery 5
+    // Completed 6 Canceled
+    if (orders.getStatus() > 2) {
+      throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+    }
+
+    Orders order = new Orders();
+    order.setId(orders.getId());
+
+    if (Orders.TO_BE_CONFIRMED.equals(orders.getStatus())) {
+      // If the order status is to be confirmed, the order status is changed to canceled
+      weChatPayUtil.refund(
+          orders.getNumber(), orders.getNumber(), orders.getAmount(), orders.getAmount());
+
+      orders.setPayStatus(Orders.REFUND);
+    }
+    orders.setStatus(Orders.CANCELLED);
+    orders.setCancelReason("User cancellation");
+    orders.setCancelTime(LocalDateTime.now());
+    orderMapper.update(orders);
+  }
+
+  @Override
+  public void repetition(Long id) {
+    Long userId = BaseContext.getCurrentId();
+    List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(id);
+
+    List<ShoppingCart> shoppingCartList =
+        orderDetailList.stream()
+            .map(
+                order -> {
+                  ShoppingCart shoppingCart = new ShoppingCart();
+
+                  BeanUtils.copyProperties(order, shoppingCart, "id");
+                  shoppingCart.setUserId(userId);
+                  shoppingCart.setCreateTime(LocalDateTime.now());
+
+                  return shoppingCart;
+                })
+            .toList();
+
+    shoppingCartMapper.insertBatch(shoppingCartList);
+  }
+
+  @Override
+  public PageResult<OrderVO> conditionSearch(OrdersPageQueryDTO ordersPageQueryDTO) {
+    PageHelper.startPage(ordersPageQueryDTO.getPage(), ordersPageQueryDTO.getPageSize());
+    Page<Orders> page = orderMapper.pageQuery(ordersPageQueryDTO);
+
+    List<OrderVO> orderVOList =
+        page.getResult().stream()
+            .map(
+                orders -> {
+                  OrderVO orderVO = new OrderVO();
+                  BeanUtils.copyProperties(orders, orderVO);
+                  orderVO.setOrderDishes(getOrderDishesStr(orders));
+                  return orderVO;
+                })
+            .toList();
+
+    return new PageResult<>(page.getTotal(), orderVOList);
+  }
+
+  @Override
+  public OrderStatisticsVO statistics() {
+    Integer toBeConfirmed = orderMapper.countStatus(Orders.TO_BE_CONFIRMED);
+    Integer confirmed = orderMapper.countStatus(Orders.CONFIRMED);
+    Integer deliveryInProgress = orderMapper.countStatus(Orders.DELIVERY_IN_PROGRESS);
+
+    OrderStatisticsVO orderStatisticsVO = new OrderStatisticsVO();
+    orderStatisticsVO.setToBeConfirmed(toBeConfirmed);
+    orderStatisticsVO.setConfirmed(confirmed);
+    orderStatisticsVO.setDeliveryInProgress(deliveryInProgress);
+    return orderStatisticsVO;
+  }
+
+  @Override
+  public void confirm(OrdersConfirmDTO ordersConfirmDTO) {
+    Orders orders = Orders.builder().id(ordersConfirmDTO.getId()).status(Orders.CONFIRMED).build();
+
+    orderMapper.update(orders);
+  }
+
+  @Override
+  public void rejection(OrdersRejectionDTO ordersRejectionDTO) throws Exception {
+    Orders orders = orderMapper.getById(ordersRejectionDTO.getId());
+    //    The order can only be rejected if it exists and has a status of 2 (order pending).
+    if (orders == null || !Orders.TO_BE_CONFIRMED.equals(orders.getStatus())) {
+      throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+    }
+
+    // User paid, refund required
+    weChatPayUtil.refund(
+        orders.getNumber(), orders.getNumber(), orders.getAmount(), orders.getAmount());
+
+    Orders order = new Orders();
+    order.setId(orders.getId());
+    order.setStatus(Orders.CANCELLED);
+    order.setRejectionReason(ordersRejectionDTO.getRejectionReason());
+    order.setCancelTime(LocalDateTime.now());
+
+    orderMapper.update(order);
+  }
+
+  @Override
+  public void cancel(OrdersCancelDTO ordersCancelDTO) throws Exception {
+    Orders orders = orderMapper.getById(ordersCancelDTO.getId());
+    if (orders == null) {
+      throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+    }
+
+    if (Orders.PAID.equals(orders.getPayStatus())) {
+      weChatPayUtil.refund(
+          orders.getNumber(), orders.getNumber(), orders.getAmount(), orders.getAmount());
+    }
+
+    Orders order = new Orders();
+    order.setId(ordersCancelDTO.getId());
+    order.setStatus(Orders.CANCELLED);
+    order.setCancelReason(ordersCancelDTO.getCancelReason());
+    order.setCancelTime(LocalDateTime.now());
+    orderMapper.update(order);
+  }
+
+  @Override
+  public void delivery(Long id) {
+    Orders orders = orderMapper.getById(id);
+
+    if (orders == null || !Orders.CONFIRMED.equals(orders.getStatus())) {
+      throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+    }
+    Orders order = new Orders();
+    order.setId(orders.getId());
+    order.setStatus(Orders.DELIVERY_IN_PROGRESS);
+
+    orderMapper.update(order);
+  }
+
+  @Override
+  public void complete(Long id) {
+    Orders orders = orderMapper.getById(id);
+
+    if (orders == null || !Orders.DELIVERY_IN_PROGRESS.equals(orders.getStatus())) {
+      throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+    }
+
+    Orders order = new Orders();
+    order.setId(orders.getId());
+    order.setStatus(Orders.COMPLETED);
+    order.setDeliveryTime(LocalDateTime.now());
+
+    orderMapper.update(orders);
+  }
+
+  private String getOrderDishesStr(Orders orders) {
+    // Get the order details
+    List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orders.getId());
+
+    // Splicing order dishes
+    List<String> orderDishList =
+        orderDetailList.stream()
+            .map(orderDetail -> orderDetail.getName() + "*" + orderDetail.getNumber() + ";")
+            .toList();
+
+    return String.join("", orderDishList);
   }
 }

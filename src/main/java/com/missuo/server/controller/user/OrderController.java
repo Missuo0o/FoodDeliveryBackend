@@ -46,4 +46,28 @@ public class OrderController {
     PageResult<OrderVO> pageResult = orderService.pageQuery(page, pageSize, status);
     return Result.success(pageResult);
   }
+
+  @GetMapping("/orderDetail/{id}")
+  @Operation(summary = "Get Order Detail")
+  public Result details(@PathVariable Long id) {
+    log.info("Get order detail: {}", id);
+    OrderVO orderVO = orderService.details(id);
+    return Result.success(orderVO);
+  }
+
+  @PutMapping("/cancel/{id}")
+  @Operation(summary = "Cancel Order")
+  public Result cancel(@PathVariable Long id) throws Exception {
+    log.info("Cancel order: {}", id);
+    orderService.userCancelById(id);
+    return Result.success();
+  }
+
+  @PostMapping("/repetition/{id}")
+  @Operation(summary = "Repetition")
+  public Result repetition(@PathVariable Long id) {
+    log.info("Repetition: {}", id);
+    orderService.repetition(id);
+    return Result.success();
+  }
 }

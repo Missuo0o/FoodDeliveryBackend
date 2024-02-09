@@ -1,6 +1,8 @@
 package com.missuo.server.controller.user;
 
+import com.missuo.common.constant.MessageConstant;
 import com.missuo.common.context.BaseContext;
+import com.missuo.common.exception.IllegalException;
 import com.missuo.common.result.Result;
 import com.missuo.pojo.entity.AddressBook;
 import com.missuo.server.service.AddressBookService;
@@ -48,6 +50,9 @@ public class AddressBookController {
   @PutMapping
   @Operation(summary = "Update Address")
   public Result update(@Validated @RequestBody AddressBook addressBook) {
+    if (addressBook.getId() == null) {
+      throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
+    }
     log.info("update address book: {}", addressBook);
     addressBookService.update(addressBook);
     return Result.success();
@@ -56,6 +61,9 @@ public class AddressBookController {
   @PutMapping("/default")
   @Operation(summary = "Set Default Address")
   public Result setDefault(@RequestBody AddressBook addressBook) {
+    if (addressBook.getId() == null) {
+      throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
+    }
     log.info("set default address book: {}", addressBook);
     addressBookService.setDefault(addressBook);
     return Result.success();

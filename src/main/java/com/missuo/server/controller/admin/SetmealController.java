@@ -59,6 +59,9 @@ public class SetmealController {
   @Operation(summary = "Update Setmeal")
   @CacheEvict(value = "setmealCache", allEntries = true)
   public Result update(@Validated @RequestBody SetmealDTO setmealDTO) {
+    if (setmealDTO.getId() == null) {
+      throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
+    }
     log.info("Update Setmeal：{}", setmealDTO);
     setmealService.update(setmealDTO);
     return Result.success();

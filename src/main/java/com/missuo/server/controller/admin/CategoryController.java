@@ -51,6 +51,9 @@ public class CategoryController {
   @PutMapping
   @Operation(summary = "Update Category")
   public Result update(@Validated @RequestBody CategoryDTO categoryDTO) {
+    if (categoryDTO.getId() == null) {
+      throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
+    }
     log.info("Update Category：{}", categoryDTO);
     categoryService.update(categoryDTO);
     return Result.success();
