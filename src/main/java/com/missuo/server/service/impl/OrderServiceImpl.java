@@ -7,7 +7,6 @@ import com.github.pagehelper.PageHelper;
 import com.missuo.common.constant.MessageConstant;
 import com.missuo.common.context.BaseContext;
 import com.missuo.common.exception.AddressBookBusinessException;
-import com.missuo.common.exception.IllegalException;
 import com.missuo.common.exception.OrderBusinessException;
 import com.missuo.common.exception.ShoppingCartBusinessException;
 import com.missuo.common.result.PageResult;
@@ -54,6 +53,7 @@ public class OrderServiceImpl implements OrderService {
     Long currentId = BaseContext.getCurrentId();
     ShoppingCart shoppingCart = ShoppingCart.builder().id(currentId).build();
     List<ShoppingCart> shoppingCarts = shoppingCartMapper.list(shoppingCart);
+
     if (shoppingCarts.isEmpty()) {
       throw new ShoppingCartBusinessException(MessageConstant.SHOPPING_CART_IS_NULL);
     }
@@ -107,7 +107,7 @@ public class OrderServiceImpl implements OrderService {
     Orders orders = orderMapper.getByNumber(ordersPaymentDTO.getOrderNumber());
 
     if (orders == null) {
-      throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
+      throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
     }
 
     // Call the WeChat payment interface
@@ -127,6 +127,11 @@ public class OrderServiceImpl implements OrderService {
 
   public void paySuccess(String outTradeNo) {
     Orders ordersDB = orderMapper.getByNumber(outTradeNo);
+
+    if (ordersDB == null) {
+      throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+    }
+
     Orders orders =
         Orders.builder()
             .id(ordersDB.getId())
