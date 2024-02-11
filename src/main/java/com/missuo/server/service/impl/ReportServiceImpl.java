@@ -1,6 +1,7 @@
 package com.missuo.server.service.impl;
 
 import com.missuo.pojo.entity.Orders;
+import com.missuo.pojo.vo.OrderReportVO;
 import com.missuo.pojo.vo.TurnoverReportVO;
 import com.missuo.pojo.vo.UserReportVO;
 import com.missuo.server.mapper.OrderMapper;
@@ -57,20 +58,14 @@ public class ReportServiceImpl implements ReportService {
     List<Integer> totalUserList = new ArrayList<>();
 
     dateList.forEach(
-        localDate -> {
-          LocalDateTime beginTime = LocalDateTime.of(localDate, LocalTime.MIN);
-          LocalDateTime endTime = LocalDateTime.of(localDate, LocalTime.MAX);
+        date -> {
+          LocalDateTime beginTime = LocalDateTime.of(date, LocalTime.MIN);
+          LocalDateTime endTime = LocalDateTime.of(date, LocalTime.MAX);
           Map<String, Object> map = new HashMap<>();
           map.put("endTime", endTime);
-          Integer totalUser = userMapper.countByMap(map);
-          if (totalUser == null) {
-            totalUser = 0;
-          }
+          int totalUser = userMapper.countByMap(map);
           map.put("beginTime", beginTime);
           Integer newUser = userMapper.countByMap(map);
-          if (newUser == null) {
-            newUser = 0;
-          }
           totalUserList.add(totalUser);
           newUserList.add(newUser);
         });
@@ -78,6 +73,47 @@ public class ReportServiceImpl implements ReportService {
         .dateList(StringUtils.join(dateList, ","))
         .newUserList(StringUtils.join(newUserList, ","))
         .totalUserList(StringUtils.join(totalUserList, ","))
+        .build();
+  }
+
+  @Override
+  public OrderReportVO getOrderStatistics(LocalDate begin, LocalDate end) {
+    List<LocalDate> dateList = getLocalDates(begin, end);
+
+    List<Integer> orderCountList = new ArrayList<>();
+    List<Integer> completedOrderCountList = new ArrayList<>();
+
+    dateList.forEach(
+        date -> {
+          LocalDateTime beginTime = LocalDateTime.of(date, LocalTime.MIN);
+          LocalDateTime endTime = LocalDateTime.of(date, LocalTime.MAX);
+          // Query the total number of orders per day
+          Map<String, Object> map = new HashMap<>();
+          map.put("beginTime", beginTime);
+          map.put("endTime", endTime);
+          Integer orderCount = userMapper.countByMap(map);
+          orderCountList.add(orderCount);
+          // Query the total number of completed orders per day
+          map.put("status", Orders.COMPLETED);
+          Integer completedOrderCount = userMapper.countByMap(map);
+          completedOrderCountList.add(completedOrderCount);
+        });
+
+    Integer totalOrderCount = orderCountList.stream().reduce(Integer::sum).orElse(0);
+
+    Integer totalCompletedOrderCount =
+        completedOrderCountList.stream().reduce(Integer::sum).orElse(0);
+
+    Double orderCompletionRate =
+        totalOrderCount == 0 ? 0.0 : totalCompletedOrderCount.doubleValue() / totalOrderCount;
+
+    return OrderReportVO.builder()
+        .dateList(StringUtils.join(dateList, ","))
+        .orderCountList(StringUtils.join(orderCountList, ","))
+        .validOrderCountList(StringUtils.join(completedOrderCountList, ","))
+        .orderCompletionRate(orderCompletionRate)
+        .totalOrderCount(totalOrderCount)
+        .validOrderCount(totalCompletedOrderCount)
         .build();
   }
 

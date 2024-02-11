@@ -33,4 +33,6 @@ public interface OrderMapper {
   @Select(
       "select sum(amount) from orders where status = #{status} and order_time >= #{beginTime} and order_time <= #{endTime}")
   BigDecimal sumByMap(Map<String, Object> map);
+
+  Integer countByMap(Map<String, Object> map);
 }

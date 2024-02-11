@@ -36,4 +36,13 @@ public class ReportController {
     log.info("User Statistic: begin={}, end={}", begin, end);
     return Result.success(reportService.getUserStatistics(begin, end));
   }
+
+  @GetMapping("/ordersStatistics")
+  @Operation(summary = "Order Statistics")
+  public Result orderStatistics(
+      @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate begin,
+      @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
+    log.info("Order Statistic: begin={}, end={}", begin, end);
+    return Result.success(reportService.getOrderStatistics(begin, end));
+  }
 }
