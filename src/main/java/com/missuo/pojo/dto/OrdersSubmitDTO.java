@@ -41,7 +41,7 @@ public class OrdersSubmitDTO implements Serializable {
   private Integer packAmount;
 
   @NotNull
-  @DecimalMin(value = "1.00")
+  @DecimalMin(value = "0.01")
   @DecimalMax(value = "99999.99")
   private BigDecimal amount;
 }

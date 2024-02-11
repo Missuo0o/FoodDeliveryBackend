@@ -1,6 +1,7 @@
 package com.missuo.server.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.missuo.common.constant.MessageConstant;
@@ -19,8 +20,11 @@ import com.missuo.pojo.vo.OrderSubmitVO;
 import com.missuo.pojo.vo.OrderVO;
 import com.missuo.server.mapper.*;
 import com.missuo.server.service.OrderService;
+import com.missuo.server.websocket.WebSocketServer;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +39,7 @@ public class OrderServiceImpl implements OrderService {
   @Autowired private ShoppingCartMapper shoppingCartMapper;
   @Autowired private WeChatPayUtil weChatPayUtil;
   @Autowired private UserMapper userMapper;
+  @Autowired private WebSocketServer webSocketServer;
 
   @Override
   @Transactional
@@ -121,10 +126,7 @@ public class OrderServiceImpl implements OrderService {
   }
 
   public void paySuccess(String outTradeNo) {
-    // Update order status
     Orders ordersDB = orderMapper.getByNumber(outTradeNo);
-
-    // If the order status is not paid, update the order status
     Orders orders =
         Orders.builder()
             .id(ordersDB.getId())
@@ -134,6 +136,14 @@ public class OrderServiceImpl implements OrderService {
             .build();
 
     orderMapper.update(orders);
+
+    Map<String, Object> map = new HashMap<>();
+    map.put("type", 1); // 1:New order 2:Reminder
+    map.put("orderId", ordersDB.getId());
+    map.put("orderNumber", "Order Number:" + ordersDB.getNumber());
+
+    String jsonString = JSON.toJSONString(map);
+    webSocketServer.sendToAllClient(jsonString);
   }
 
   @Override
@@ -342,6 +352,22 @@ public class OrderServiceImpl implements OrderService {
     order.setDeliveryTime(LocalDateTime.now());
 
     orderMapper.update(orders);
+  }
+
+  @Override
+  public void reminder(Long id) {
+    Orders orders = orderMapper.getById(id);
+
+    if (orders == null || !Orders.TO_BE_CONFIRMED.equals(orders.getStatus())) {
+      throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+    }
+
+    Map<String, Object> map = new HashMap<>();
+    map.put("type", 2); // 1:New order 2:Reminder
+    map.put("orderId", orders.getId());
+    map.put("content", "Order Number:" + orders.getNumber());
+
+    webSocketServer.sendToAllClient(JSON.toJSONString(map));
   }
 
   private String getOrderDishesStr(Orders orders) {

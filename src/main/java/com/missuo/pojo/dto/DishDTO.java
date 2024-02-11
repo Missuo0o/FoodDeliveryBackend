@@ -22,7 +22,7 @@ public class DishDTO implements Serializable {
   private Long categoryId;
 
   @NotNull
-  @DecimalMin(value = "1.00")
+  @DecimalMin(value = "0.01")
   @DecimalMax(value = "99999.99")
   private BigDecimal price;
 

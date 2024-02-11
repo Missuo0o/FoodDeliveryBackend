@@ -70,4 +70,11 @@ public class OrderController {
     orderService.repetition(id);
     return Result.success();
   }
+
+  @GetMapping("/reminder/{id}")
+  @Operation(summary = "Reminder")
+  public Result reminder(@PathVariable Long id) {
+    orderService.reminder(id);
+    return Result.success();
+  }
 }

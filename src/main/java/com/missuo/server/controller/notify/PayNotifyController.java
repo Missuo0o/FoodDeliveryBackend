@@ -28,13 +28,12 @@ public class PayNotifyController {
   public void paySuccessNotify(HttpServletRequest request, HttpServletResponse response)
       throws Exception {
     // Read the request body
-
     String body = readData(request);
+
     // Decrypt the request body
-
     String plainText = decryptData(body);
-    // Parse the decrypted request body
 
+    // Parse the decrypted request body
     JSONObject jsonObject = JSON.parseObject(plainText);
     String outTradeNo = jsonObject.getString("out_trade_no");
     String transactionId = jsonObject.getString("transaction_id");
