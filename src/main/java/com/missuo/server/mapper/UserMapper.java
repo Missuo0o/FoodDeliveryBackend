@@ -1,6 +1,7 @@
 package com.missuo.server.mapper;
 
 import com.missuo.pojo.entity.User;
+import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -14,4 +15,6 @@ public interface UserMapper {
 
   @Select("select * from user where id = #{userId}")
   User getById(Long userId);
+
+  Integer countByMap(Map<String, Object> map);
 }

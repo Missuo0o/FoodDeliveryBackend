@@ -7,4 +7,16 @@
         INSERT INTO user (openid, name, phone, sex, id_number, avatar, create_time)
         VALUES (#{openid}, #{name}, #{phone}, #{sex}, #{idNumber}, #{avatar}, #{createTime})
     </insert>
+
+    <select id="countByMap" resultType="java.lang.Integer">
+        SELECT count(id) FROM user
+        <where>
+            <if test="beginTime != null">
+                AND create_time &gt;= #{beginTime}
+            </if>
+            <if test="endTime != null">
+                AND create_time &lt;= #{endTime}
+            </if>
+        </where>
+    </select>
 </mapper>
