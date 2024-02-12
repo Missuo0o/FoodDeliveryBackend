@@ -5,6 +5,7 @@ import com.alibaba.fastjson2.JSON;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.missuo.common.constant.MessageConstant;
+import com.missuo.common.constant.MqConstant;
 import com.missuo.common.context.BaseContext;
 import com.missuo.common.exception.AddressBookBusinessException;
 import com.missuo.common.exception.OrderBusinessException;
@@ -13,6 +14,7 @@ import com.missuo.common.result.PageResult;
 import com.missuo.common.utils.WeChatPayUtil;
 import com.missuo.pojo.dto.*;
 import com.missuo.pojo.entity.*;
+import com.missuo.pojo.message.MultDelayMessage;
 import com.missuo.pojo.vo.OrderPaymentVO;
 import com.missuo.pojo.vo.OrderStatisticsVO;
 import com.missuo.pojo.vo.OrderSubmitVO;
@@ -24,7 +26,10 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +44,7 @@ public class OrderServiceImpl implements OrderService {
   @Autowired private WeChatPayUtil weChatPayUtil;
   @Autowired private UserMapper userMapper;
   @Autowired private WebSocketServer webSocketServer;
+  @Autowired private RabbitTemplate rabbitTemplate;
 
   @Override
   @Transactional
@@ -89,6 +95,25 @@ public class OrderServiceImpl implements OrderService {
 
     // Delete the shopping cart
     shoppingCartMapper.deleteByUserId(currentId);
+
+    // Send a delayed message to the queue
+    MultDelayMessage<Long> longMultDelayMessage = new MultDelayMessage<>();
+    longMultDelayMessage.setDelayMillis(
+        Stream.generate(() -> 10000L).limit(15).collect(Collectors.toList()));
+    longMultDelayMessage.setData(orders.getId());
+
+    System.out.println(longMultDelayMessage);
+
+    rabbitTemplate.convertAndSend(
+        MqConstant.DELAY_EXCHANGE,
+        MqConstant.DELAY_ORDER_ROUTING_KEY,
+        longMultDelayMessage,
+        message -> {
+          message
+              .getMessageProperties()
+              .setDelay(longMultDelayMessage.removeNextDelay().intValue());
+          return message;
+        });
 
     // Return the order information
     return OrderSubmitVO.builder()
@@ -214,7 +239,7 @@ public class OrderServiceImpl implements OrderService {
     Orders order = new Orders();
     order.setId(orders.getId());
 
-    if (Orders.TO_BE_CONFIRMED.equals(orders.getStatus())) {
+    if (Objects.equals(orders.getStatus(), Orders.TO_BE_CONFIRMED)) {
       // If the order status is to be confirmed, the order status is changed to canceled
       weChatPayUtil.refund(
           orders.getNumber(), orders.getNumber(), orders.getAmount(), orders.getAmount());
@@ -316,7 +341,7 @@ public class OrderServiceImpl implements OrderService {
       throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
     }
 
-    if (Orders.PAID.equals(orders.getPayStatus())) {
+    if (Objects.equals(orders.getPayStatus(), Orders.PAID)) {
       weChatPayUtil.refund(
           orders.getNumber(), orders.getNumber(), orders.getAmount(), orders.getAmount());
     }

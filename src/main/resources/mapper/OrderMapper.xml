@@ -101,5 +101,16 @@
         order by number desc
         limit 0,10
     </select>
+    <select id="getByStatusAndOrderTimeLT" resultType="com.missuo.pojo.entity.Orders">
+        select * from orders
+        <where>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="orderTime != null">
+                and order_time &lt; #{orderTime}
+            </if>
+        </where>
+    </select>
 
 </mapper>

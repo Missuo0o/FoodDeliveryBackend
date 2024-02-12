@@ -13,19 +13,20 @@ import org.springframework.stereotype.Component;
 public class OrderTask {
   @Autowired private OrderMapper orderMapper;
 
-  @Scheduled(cron = "0 * * * * ?")
-  public void processTimeoutOrder() {
-    log.info("processTimeoutOrder");
-    orderMapper
-        .getByStatusAndOrderTimeLT(Orders.PENDING_PAYMENT, LocalDateTime.now().minusMinutes(15L))
-        .forEach(
-            order -> {
-              order.setStatus(Orders.CANCELLED);
-              order.setCancelTime(LocalDateTime.now());
-              order.setCancelReason("Payment overdue");
-              orderMapper.update(order);
-            });
-  }
+  //  @Scheduled(cron = "0 * * * * ?")
+  //  public void processTimeoutOrder() {
+  //    log.info("processTimeoutOrder");
+  //    orderMapper
+  //        .getByStatusAndOrderTimeLT(Orders.PENDING_PAYMENT,
+  // LocalDateTime.now().minusMinutes(15L))
+  //        .forEach(
+  //            order -> {
+  //              order.setStatus(Orders.CANCELLED);
+  //              order.setCancelTime(LocalDateTime.now());
+  //              order.setCancelReason("Payment overdue");
+  //              orderMapper.update(order);
+  //            });
+  //  }
 
   @Scheduled(cron = "0 0 1 * * ?")
   public void processDeliveryOrder() {
