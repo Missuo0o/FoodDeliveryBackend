@@ -1,6 +1,7 @@
 package com.missuo.server.mapper;
 
 import com.github.pagehelper.Page;
+import com.missuo.pojo.dto.GoodsSalesDTO;
 import com.missuo.pojo.dto.OrdersPageQueryDTO;
 import com.missuo.pojo.entity.Orders;
 import java.math.BigDecimal;
@@ -35,4 +36,6 @@ public interface OrderMapper {
   BigDecimal sumByMap(Map<String, Object> map);
 
   Integer countByMap(Map<String, Object> map);
+
+  List<GoodsSalesDTO> getGoodsSales(Map<String, Object> map);
 }

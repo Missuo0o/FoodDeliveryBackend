@@ -1,6 +1,7 @@
 package com.missuo.pojo.vo;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,13 +13,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BusinessDataVO implements Serializable {
 
-  private Double turnover;
+  private BigDecimal turnover;
 
   private Integer validOrderCount;
 
   private Double orderCompletionRate;
 
-  private Double unitPrice;
+  private BigDecimal unitPrice;
 
   private Integer newUsers;
 }

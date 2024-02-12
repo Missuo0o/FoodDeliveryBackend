@@ -7,6 +7,7 @@ import com.missuo.pojo.entity.Dish;
 import com.missuo.pojo.vo.DishVO;
 import com.missuo.server.annotation.AutoFill;
 import java.util.List;
+import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -36,4 +37,6 @@ public interface DishMapper {
   @Select(
       "select a.* from dish a left join setmeal_dish b on a.id = b.dish_id where b.setmeal_id = #{setmealId}")
   List<Dish> getBySetmealId(Long id);
+
+  Integer countByMap(Map<String, Object> map);
 }

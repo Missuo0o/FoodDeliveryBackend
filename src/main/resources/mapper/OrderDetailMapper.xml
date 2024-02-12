@@ -4,11 +4,11 @@
 <mapper namespace="com.missuo.server.mapper.OrderDetailMapper">
 
     <insert id="insertBatch">
-        insert into order_detail (name, image, order_id, dish_id, setmeal_id, dish_flavor, amount)
+        insert into order_detail (name, image, order_id, dish_id, setmeal_id, dish_flavor, amount,number)
         values
         <foreach collection="orderDetails" item="item" separator=",">
             (#{item.name}, #{item.image}, #{item.orderId}, #{item.dishId}, #{item.setmealId}, #{item.dishFlavor},
-            #{item.amount})
+            #{item.amount},#{item.number})
         </foreach>
     </insert>
 </mapper>

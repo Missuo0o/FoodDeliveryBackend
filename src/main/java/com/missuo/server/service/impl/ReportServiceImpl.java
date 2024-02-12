@@ -1,7 +1,9 @@
 package com.missuo.server.service.impl;
 
+import com.missuo.pojo.dto.GoodsSalesDTO;
 import com.missuo.pojo.entity.Orders;
 import com.missuo.pojo.vo.OrderReportVO;
+import com.missuo.pojo.vo.SalesTop10ReportVO;
 import com.missuo.pojo.vo.TurnoverReportVO;
 import com.missuo.pojo.vo.UserReportVO;
 import com.missuo.server.mapper.OrderMapper;
@@ -115,6 +117,26 @@ public class ReportServiceImpl implements ReportService {
         .totalOrderCount(totalOrderCount)
         .validOrderCount(totalCompletedOrderCount)
         .build();
+  }
+
+  @Override
+  public SalesTop10ReportVO getSalesTop10(LocalDate begin, LocalDate end) {
+    LocalDateTime beginTime = LocalDateTime.of(begin, LocalTime.MIN);
+    LocalDateTime endTime = LocalDateTime.of(end, LocalTime.MAX);
+
+    Map<String, Object> map = new HashMap<>();
+    map.put("beginTime", beginTime);
+    map.put("endTime", endTime);
+    map.put("status", Orders.COMPLETED);
+
+    List<GoodsSalesDTO> goodsSalesList = orderMapper.getGoodsSales(map);
+
+    List<String> name = goodsSalesList.stream().map(GoodsSalesDTO::getName).toList();
+    String nameList = StringUtils.join(name, ",");
+    List<Integer> number = goodsSalesList.stream().map(GoodsSalesDTO::getNumber).toList();
+    String numberList = StringUtils.join(number, ",");
+
+    return SalesTop10ReportVO.builder().nameList(nameList).numberList(numberList).build();
   }
 
   private List<LocalDate> getLocalDates(LocalDate begin, LocalDate end) {

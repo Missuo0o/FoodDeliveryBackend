@@ -5,6 +5,7 @@ import com.missuo.pojo.entity.Setmeal;
 import com.missuo.pojo.vo.DishItemVO;
 import com.missuo.server.annotation.AutoFill;
 import java.util.List;
+import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -32,4 +33,6 @@ public interface SetmealMapper {
           + "from setmeal_dish sd left join dish d on sd.dish_id = d.id "
           + "where sd.setmeal_id = #{setmealId}")
   List<DishItemVO> getDishItemBySetmealId(Long setmealId);
+
+  Integer countByMap(Map<String, Object> map);
 }

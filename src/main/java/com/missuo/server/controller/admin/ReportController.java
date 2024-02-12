@@ -45,4 +45,13 @@ public class ReportController {
     log.info("Order Statistic: begin={}, end={}", begin, end);
     return Result.success(reportService.getOrderStatistics(begin, end));
   }
+
+  @GetMapping("/top10")
+  @Operation(summary = "Top 10")
+  public Result top10(
+      @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate begin,
+      @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
+    log.info("Top 10: begin={}, end={}", begin, end);
+    return Result.success(reportService.getSalesTop10(begin, end));
+  }
 }
