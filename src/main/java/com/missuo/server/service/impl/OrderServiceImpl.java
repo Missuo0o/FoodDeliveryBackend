@@ -99,7 +99,7 @@ public class OrderServiceImpl implements OrderService {
     // Send a delayed message to the queue
     MultDelayMessage<Long> longMultDelayMessage = new MultDelayMessage<>();
     longMultDelayMessage.setDelayMillis(
-        Stream.generate(() -> 10000L).limit(15).collect(Collectors.toList()));
+        Stream.generate(() -> 60000L).limit(15).collect(Collectors.toList()));
     longMultDelayMessage.setData(orders.getId());
 
     System.out.println(longMultDelayMessage);
