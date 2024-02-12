@@ -28,11 +28,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
   @Autowired private DishMapper dishMapper;
   @Autowired private SetmealMapper setmealMapper;
 
-  public BusinessDataVO getBusinessData() {
+  public BusinessDataVO getBusinessData(LocalDateTime begin, LocalDateTime end) {
     Map<String, Object> map = new HashMap<>();
 
-    LocalDateTime begin = LocalDateTime.now().with(LocalTime.MIN);
-    LocalDateTime end = LocalDateTime.now().with(LocalTime.MAX);
     map.put("beginTime", begin);
     map.put("endTime", end);
 

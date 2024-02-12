@@ -5,6 +5,8 @@ import com.missuo.pojo.vo.BusinessDataVO;
 import com.missuo.server.service.WorkspaceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +25,9 @@ public class WorkSpaceController {
   @Operation(summary = "Business Data")
   public Result businessData() {
     log.info("Business Data");
-    BusinessDataVO businessDataVO = workspaceService.getBusinessData();
+    LocalDateTime begin = LocalDateTime.now().with(LocalTime.MIN);
+    LocalDateTime end = LocalDateTime.now().with(LocalTime.MAX);
+    BusinessDataVO businessDataVO = workspaceService.getBusinessData(begin, end);
     return Result.success(businessDataVO);
   }
 

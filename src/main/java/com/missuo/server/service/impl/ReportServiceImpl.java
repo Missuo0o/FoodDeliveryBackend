@@ -2,22 +2,24 @@ package com.missuo.server.service.impl;
 
 import com.missuo.pojo.dto.GoodsSalesDTO;
 import com.missuo.pojo.entity.Orders;
-import com.missuo.pojo.vo.OrderReportVO;
-import com.missuo.pojo.vo.SalesTop10ReportVO;
-import com.missuo.pojo.vo.TurnoverReportVO;
-import com.missuo.pojo.vo.UserReportVO;
+import com.missuo.pojo.vo.*;
 import com.missuo.server.mapper.OrderMapper;
 import com.missuo.server.mapper.UserMapper;
 import com.missuo.server.service.ReportService;
+import com.missuo.server.service.WorkspaceService;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,7 @@ import org.springframework.stereotype.Service;
 public class ReportServiceImpl implements ReportService {
   @Autowired private OrderMapper orderMapper;
   @Autowired private UserMapper userMapper;
+  @Autowired private WorkspaceService workspaceService;
 
   @Override
   public TurnoverReportVO getTurnoversStatistics(LocalDate begin, LocalDate end) {
@@ -137,6 +140,63 @@ public class ReportServiceImpl implements ReportService {
     String numberList = StringUtils.join(number, ",");
 
     return SalesTop10ReportVO.builder().nameList(nameList).numberList(numberList).build();
+  }
+
+  @Override
+  public void export(HttpServletResponse response) {
+    LocalDate dateBegin = LocalDate.now().minusDays(30L);
+    LocalDate dateEnd = LocalDate.now().minusDays(1L);
+
+    BusinessDataVO businessDataVO =
+        workspaceService.getBusinessData(
+            LocalDateTime.of(dateBegin, LocalTime.MIN), LocalDateTime.of(dateEnd, LocalTime.MAX));
+
+    // Write data to Excel files via POIs
+    InputStream resourceAsStream =
+        this.getClass().getClassLoader().getResourceAsStream("template/Template.xlsx");
+
+    // Create a new Excel file based on the template file
+    try {
+      XSSFWorkbook excel = new XSSFWorkbook(Objects.requireNonNull(resourceAsStream));
+
+      XSSFSheet sheet = excel.getSheet("Sheet1");
+
+      sheet.getRow(1).getCell(1).setCellValue("Date:" + dateBegin + " - " + dateEnd);
+
+      XSSFRow row = sheet.getRow(3);
+      row.getCell(2).setCellValue(businessDataVO.getTurnover().doubleValue());
+      row.getCell(4).setCellValue(businessDataVO.getOrderCompletionRate());
+      row.getCell(6).setCellValue(businessDataVO.getNewUsers());
+
+      row = sheet.getRow(4);
+      row.getCell(2).setCellValue(businessDataVO.getValidOrderCount());
+      row.getCell(4).setCellValue(businessDataVO.getUnitPrice().doubleValue());
+
+      for (int i = 0; i < 30; i++) {
+        LocalDate date = dateEnd.plusDays(i);
+        // Query data for a specific day
+        BusinessDataVO businessData =
+            workspaceService.getBusinessData(
+                LocalDateTime.of(date, LocalTime.MIN), LocalDateTime.of(date, LocalTime.MAX));
+
+        row = sheet.getRow(7 + i);
+        row.getCell(1).setCellValue(date.toString());
+        row.getCell(2).setCellValue(businessData.getTurnover().doubleValue());
+        row.getCell(3).setCellValue(businessData.getValidOrderCount());
+        row.getCell(4).setCellValue(businessData.getOrderCompletionRate());
+        row.getCell(5).setCellValue(businessData.getUnitPrice().doubleValue());
+        row.getCell(6).setCellValue(businessData.getNewUsers());
+      }
+
+      // The output stream is used to download the Excel file to the client's browser
+      ServletOutputStream outputStream = response.getOutputStream();
+      excel.write(outputStream);
+
+      outputStream.close();
+      excel.close();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private List<LocalDate> getLocalDates(LocalDate begin, LocalDate end) {

@@ -4,6 +4,8 @@ import com.missuo.common.result.Result;
 import com.missuo.server.service.ReportService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.time.LocalDate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,5 +55,12 @@ public class ReportController {
       @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
     log.info("Top 10: begin={}, end={}", begin, end);
     return Result.success(reportService.getSalesTop10(begin, end));
+  }
+
+  @GetMapping("/export")
+  @Operation(summary = "Export Report")
+  public void export(HttpServletResponse response) throws IOException {
+    log.info("Export report");
+    reportService.export(response);
   }
 }
