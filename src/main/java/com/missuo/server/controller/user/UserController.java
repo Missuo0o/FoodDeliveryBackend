@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -46,7 +47,7 @@ public class UserController {
     UserLoginVO userLoginVO =
         UserLoginVO.builder().id(user.getId()).openid(user.getOpenid()).token(token).build();
 
-    redisTemplate.opsForValue().set("User_id" + user.getId(), user.getId());
+    redisTemplate.opsForValue().set("User_id" + user.getId(), user.getId(), 2, TimeUnit.HOURS);
     return Result.success(userLoginVO);
   }
 }

@@ -16,6 +16,7 @@ import com.missuo.pojo.entity.Employee;
 import com.missuo.server.mapper.EmployeeMapper;
 import com.missuo.server.service.EmployeeService;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.codec.digest.Md5Crypt;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,9 @@ public class EmployeeServiceImpl implements EmployeeService {
       // Account locked
       throw new AccountLockedException(MessageConstant.ACCOUNT_LOCKED);
     }
-    redisTemplate.opsForValue().set("Employee_id" + employee.getId(), employee.getId());
+    redisTemplate
+        .opsForValue()
+        .set("Employee_id" + employee.getId(), employee.getId(), 2, TimeUnit.HOURS);
     return employee;
   }
 
@@ -91,7 +94,7 @@ public class EmployeeServiceImpl implements EmployeeService {
   public void startOrStop(Integer status, Long id) {
     Employee employee = Employee.builder().id(id).status(status).build();
     if (status == 1) {
-      redisTemplate.opsForValue().set("Employee_id" + id, id);
+      redisTemplate.opsForValue().set("Employee_id" + id, id, 2, TimeUnit.HOURS);
     }
     if (status == 0) {
       redisTemplate.delete("Employee_id" + id);

@@ -14,6 +14,7 @@ import com.missuo.server.service.UserService;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -48,7 +49,7 @@ public class UserServiceImpl implements UserService {
       user = User.builder().openid(openid).createTime(LocalDateTime.now()).build();
       userMapper.insert(user);
     }
-    redisTemplate.opsForValue().set(user.getId(), user.getId());
+    redisTemplate.opsForValue().set("User_id" + user.getId(), user.getId(), 2, TimeUnit.HOURS);
     return user;
   }
 }
