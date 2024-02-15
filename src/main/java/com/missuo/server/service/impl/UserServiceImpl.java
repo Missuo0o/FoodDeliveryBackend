@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,6 +23,7 @@ public class UserServiceImpl implements UserService {
   @Autowired private HttpClientUtil httpClientUtil;
   @Autowired private WeChatProperties weChatProperties;
   @Autowired private UserMapper userMapper;
+  @Autowired private RedisTemplate<Object, Object> redisTemplate;
 
   @Override
   public User vxLogin(UserLoginDTO userLoginDTO) {
@@ -46,7 +48,7 @@ public class UserServiceImpl implements UserService {
       user = User.builder().openid(openid).createTime(LocalDateTime.now()).build();
       userMapper.insert(user);
     }
-
+    redisTemplate.opsForValue().set(user.getId(), user.getId());
     return user;
   }
 }

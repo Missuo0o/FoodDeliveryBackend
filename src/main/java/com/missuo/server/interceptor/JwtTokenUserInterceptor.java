@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -21,6 +22,7 @@ public class JwtTokenUserInterceptor implements HandlerInterceptor {
 
   @Autowired private JwtProperties jwtProperties;
   @Autowired private JwtUtil jwtUtil;
+  @Autowired private RedisTemplate<Object, Object> redisTemplate;
 
   public boolean preHandle(
       HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -36,9 +38,14 @@ public class JwtTokenUserInterceptor implements HandlerInterceptor {
       log.info("Jwt verification:{}", token);
       Claims claims = jwtUtil.parseJWT(jwtProperties.getUserSecretKey(), token);
       Long userID = Long.valueOf(claims.get(JwtClaimsConstant.USER_ID).toString());
-      log.info("Current User ID: {}", userID);
-      BaseContext.setCurrentId(userID);
-      return true;
+      Long id = (Long) redisTemplate.opsForValue().get("User_id" + userID);
+      if (id == null) {
+        throw new UserNotLoginException(MessageConstant.USER_NOT_LOGIN);
+      } else {
+        BaseContext.setCurrentId(userID);
+        return true;
+      }
+
     } catch (Exception ex) {
       //            response.setStatus(401);
       //            return false;

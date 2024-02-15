@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,6 +29,7 @@ public class UserController {
   @Autowired private UserService userService;
   @Autowired private JwtProperties jwtProperties;
   @Autowired private JwtUtil jwtUtil;
+  @Autowired private RedisTemplate<Object, Object> redisTemplate;
 
   @PostMapping("/login")
   @Operation(summary = "User Login")
@@ -43,6 +45,8 @@ public class UserController {
 
     UserLoginVO userLoginVO =
         UserLoginVO.builder().id(user.getId()).openid(user.getOpenid()).token(token).build();
+
+    redisTemplate.opsForValue().set("User_id" + user.getId(), user.getId());
     return Result.success(userLoginVO);
   }
 }

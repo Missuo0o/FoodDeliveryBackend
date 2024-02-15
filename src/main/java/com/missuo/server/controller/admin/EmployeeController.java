@@ -2,6 +2,7 @@ package com.missuo.server.controller.admin;
 
 import com.missuo.common.constant.JwtClaimsConstant;
 import com.missuo.common.constant.MessageConstant;
+import com.missuo.common.context.BaseContext;
 import com.missuo.common.exception.IllegalException;
 import com.missuo.common.properties.JwtProperties;
 import com.missuo.common.result.PageResult;
@@ -21,6 +22,7 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +35,7 @@ public class EmployeeController {
   @Autowired private EmployeeService employeeService;
   @Autowired private JwtProperties jwtProperties;
   @Autowired private JwtUtil jwtUtil;
+  @Autowired private RedisTemplate<Object, Object> redisTemplate;
 
   @PostMapping("/login")
   @Operation(summary = "Employee Login")
@@ -61,6 +64,8 @@ public class EmployeeController {
   @PostMapping("/logout")
   @Operation(summary = "Employee Logout")
   public Result logout() {
+    System.out.println(BaseContext.getCurrentId());
+    redisTemplate.delete("Employee_id" + BaseContext.getCurrentId());
     return Result.success();
   }
 

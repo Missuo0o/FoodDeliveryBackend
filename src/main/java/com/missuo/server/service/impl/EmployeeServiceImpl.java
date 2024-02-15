@@ -19,18 +19,20 @@ import java.util.Objects;
 import org.apache.commons.codec.digest.Md5Crypt;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
   @Autowired private EmployeeMapper employeeMapper;
+  @Autowired private RedisTemplate<Object, Object> redisTemplate;
 
   public Employee login(EmployeeLoginDTO employeeLoginDTO) {
     String username = employeeLoginDTO.getUsername();
     String password = employeeLoginDTO.getPassword();
 
-    // 1、Querying data in the database by user name
+    // 1、Querying data in the database by username
     Employee employee = employeeMapper.getByUsername(username);
 
     // 2、Handle various abnormal situations (username does not exist, password is incorrect, account
@@ -52,7 +54,7 @@ public class EmployeeServiceImpl implements EmployeeService {
       // Account locked
       throw new AccountLockedException(MessageConstant.ACCOUNT_LOCKED);
     }
-
+    redisTemplate.opsForValue().set("Employee_id" + employee.getId(), employee.getId());
     return employee;
   }
 
@@ -64,11 +66,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     employee.setStatus(StatusConstant.ENABLE);
     employee.setPassword(
         Md5Crypt.md5Crypt(PasswordConstant.DEFAULT_PASSWORD.getBytes(), "$1$ShunZhang"));
-    //    employee.setCreateTime(LocalDateTime.now());
-    //    employee.setUpdateTime(LocalDateTime.now());
-    //
-    //    employee.setCreateUser(BaseContext.getCurrentId());
-    //    employee.setUpdateUser(BaseContext.getCurrentId());
 
     employeeMapper.insert(employee);
   }
@@ -93,6 +90,12 @@ public class EmployeeServiceImpl implements EmployeeService {
   @Override
   public void startOrStop(Integer status, Long id) {
     Employee employee = Employee.builder().id(id).status(status).build();
+    if (status == 1) {
+      redisTemplate.opsForValue().set("Employee_id" + id, id);
+    }
+    if (status == 0) {
+      redisTemplate.delete("Employee_id" + id);
+    }
 
     employeeMapper.update(employee);
   }
