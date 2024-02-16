@@ -308,7 +308,7 @@ public class OrderServiceImpl implements OrderService {
 
   @Override
   public void confirm(OrdersConfirmDTO ordersConfirmDTO) {
-    Orders orders = Orders.builder().id(ordersConfirmDTO.getId()).status(Orders.COMPLETED).build();
+    Orders orders = Orders.builder().id(ordersConfirmDTO.getId()).status(Orders.CONFIRMED).build();
 
     orderMapper.update(orders);
   }
@@ -381,7 +381,7 @@ public class OrderServiceImpl implements OrderService {
     order.setStatus(Orders.COMPLETED);
     order.setDeliveryTime(LocalDateTime.now());
 
-    orderMapper.update(orders);
+    orderMapper.update(order);
   }
 
   @Override
