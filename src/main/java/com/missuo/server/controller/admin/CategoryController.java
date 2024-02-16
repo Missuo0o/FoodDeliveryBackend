@@ -27,6 +27,7 @@ public class CategoryController {
   @PostMapping
   @Operation(summary = "Add Category")
   public Result save(@Validated @RequestBody CategoryDTO categoryDTO) {
+
     log.info("Add Category：{}", categoryDTO);
     categoryService.save(categoryDTO);
     return Result.success();
