@@ -8,10 +8,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class MultDelayMessage<T> implements Serializable {
+  private static final long serialVersionUID = 1;
   private T data;
   private List<Long> delayMillis;
-
-  private static final long serialVersionUID = 1;
 
   public MultDelayMessage(T data, List<Long> delayMillis) {
     this.data = data;
