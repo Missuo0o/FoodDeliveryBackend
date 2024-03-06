@@ -38,6 +38,7 @@ mybatis:
   type-aliases-package: com.missuo.pojo.entity
   configuration:
     map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
 
 logging:
   level:

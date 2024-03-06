@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.missuo.common.constant.MessageConstant;
 import com.missuo.common.constant.StatusConstant;
 import com.missuo.common.exception.DeletionNotAllowedException;
+import com.missuo.common.exception.SetmealEnableFailedException;
 import com.missuo.common.result.PageResult;
 import com.missuo.pojo.dto.SetmealDTO;
 import com.missuo.pojo.dto.SetmealPageQueryDTO;
@@ -112,7 +113,7 @@ public class SetmealServiceImpl implements SetmealService {
       }
       if (bySetmealId.stream()
           .anyMatch(dish -> Objects.equals(dish.getStatus(), StatusConstant.DISABLE))) {
-        throw new DeletionNotAllowedException(MessageConstant.SETMEAL_ENABLE_FAILED);
+        throw new SetmealEnableFailedException(MessageConstant.SETMEAL_ENABLE_FAILED);
       }
     }
     Setmeal setmeal = Setmeal.builder().id(id).status(status).build();

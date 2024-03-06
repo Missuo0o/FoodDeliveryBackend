@@ -9,7 +9,6 @@ import com.missuo.common.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -17,7 +16,6 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
-@Slf4j
 public class JwtTokenAdminInterceptor implements HandlerInterceptor {
 
   @Autowired private JwtProperties jwtProperties;
@@ -35,7 +33,6 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
     String token = request.getHeader(jwtProperties.getAdminTokenName());
 
     try {
-      log.info("Jwt verification:{}", token);
       Claims claims = jwtUtil.parseJWT(jwtProperties.getAdminSecretKey(), token);
       Long empId = Long.valueOf(claims.get(JwtClaimsConstant.EMP_ID).toString());
       Long id = (Long) redisTemplate.opsForValue().get("Employee_id" + empId);

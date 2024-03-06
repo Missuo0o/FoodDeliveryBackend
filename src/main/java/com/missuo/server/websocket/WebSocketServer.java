@@ -17,7 +17,31 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class WebSocketServer {
 
-  private static Map<String, Session> sessionMap = new HashMap<>();
+  private static final Map<String, Session> sessionMap = new HashMap<>();
+
+  //  private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+  //  public WebSocketServer() {
+  //    startHeartbeatTask();
+  //  }
+  //
+  //  private void startHeartbeatTask() {
+  //    scheduler.scheduleAtFixedRate(
+  //        () -> {
+  //          for (Session session : sessionMap.values()) {
+  //            if (session.isOpen()) {
+  //              try {
+  //                session.getBasicRemote().sendText("heartbeat");
+  //              } catch (Exception e) {
+  //                log.error("Failed to send heartbeat to session {}", session.getId(), e);
+  //              }
+  //            }
+  //          }
+  //        },
+  //        0,
+  //        60,
+  //        TimeUnit.SECONDS);
+  //  }
 
   @OnOpen
   public void onOpen(Session session, @PathParam("sid") String sid) {
@@ -32,6 +56,7 @@ public class WebSocketServer {
 
   @OnClose
   public void onClose(@PathParam("sid") String sid) {
+    log.info("onClose: sid={}", sid);
     sessionMap.remove(sid);
   }
 
@@ -41,7 +66,7 @@ public class WebSocketServer {
       try {
         session.getBasicRemote().sendText(message);
       } catch (Exception e) {
-        e.printStackTrace();
+        log.info("Failed to send message to session {}", session.getId());
       }
     }
   }
