@@ -11,8 +11,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @EnableScheduling
 public class MissuoApplication {
-
   public static void main(String[] args) {
+
     SpringApplication.run(MissuoApplication.class, args);
   }
 }

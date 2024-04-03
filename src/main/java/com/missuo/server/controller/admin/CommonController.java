@@ -24,6 +24,7 @@ public class CommonController {
   @PostMapping("/upload")
   @Operation(summary = "Upload File")
   public Result upload(MultipartFile file) {
+
     log.info("Upload File：{}", file);
     try {
       String originalFilename = file.getOriginalFilename();
