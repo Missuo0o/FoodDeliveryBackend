@@ -15,16 +15,16 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @Slf4j
-public class WebMvcConfiguration extends WebMvcConfigurationSupport {
+public class WebMvcConfiguration implements WebMvcConfigurer {
 
   @Autowired private JwtTokenAdminInterceptor jwtTokenAdminInterceptor;
   @Autowired private JwtTokenUserInterceptor jwtTokenUserInterceptor;
 
-  protected void addInterceptors(InterceptorRegistry registry) {
+  public void addInterceptors(InterceptorRegistry registry) {
     log.info("Start registering a custom interceptor...");
     registry
         .addInterceptor(jwtTokenAdminInterceptor)
@@ -35,6 +35,15 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         .addPathPatterns("/user/**")
         .excludePathPatterns("/user/user/login")
         .excludePathPatterns("/user/shop/status");
+  }
+
+  @Override
+  public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    log.info("Start registering Swagger static resources...");
+    registry.addResourceHandler("/doc.html").addResourceLocations("classpath:/META-INF/resources/");
+    registry
+        .addResourceHandler("/webjars/**")
+        .addResourceLocations("classpath:/META-INF/resources/webjars/");
   }
 
   @Bean
@@ -65,16 +74,8 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     return new OpenAPI().info(apiInfo());
   }
 
-  protected void addResourceHandlers(ResourceHandlerRegistry registry) {
-    log.info("Start registering Swagger static resources...");
-    registry.addResourceHandler("/doc.html").addResourceLocations("classpath:/META-INF/resources/");
-    registry
-        .addResourceHandler("/webjars/**")
-        .addResourceLocations("classpath:/META-INF/resources/webjars/");
-  }
-
   @Override
-  protected void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+  public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
     log.info("Start registering a custom message converter...");
     MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter =
         new MappingJackson2HttpMessageConverter();
