@@ -18,7 +18,7 @@ profile:
 #    paths:
 #      - <path/where/not/run/inspection>
 
-projectJDK: 22 #(Applied in CI/CD pipeline)
+projectJDK: '21' #(Applied in CI/CD pipeline)
 
 #Execute shell command before Qodana execution (Applied in CI/CD pipeline)
 #bootstrap: sh ./prepare-qodana.sh
@@ -29,3 +29,5 @@ projectJDK: 22 #(Applied in CI/CD pipeline)
 
 #Specify Qodana linter for analysis (Applied in CI/CD pipeline)
 linter: jetbrains/qodana-jvm:latest
+include:
+  - name: CheckDependencyLicenses
