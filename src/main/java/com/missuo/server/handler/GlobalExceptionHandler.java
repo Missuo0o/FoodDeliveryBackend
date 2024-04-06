@@ -19,25 +19,25 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(UserNotLoginException.class)
   public ResponseEntity<Result> userNotLoginExceptionHandler(UserNotLoginException ex) {
-    log.error("Exception information：{}", ex.getMessage());
+    getError(ex);
     return new ResponseEntity<>(Result.unAuthorized(ex.getMessage()), HttpStatus.UNAUTHORIZED);
   }
 
   @ExceptionHandler(IllegalException.class)
   public ResponseEntity<Result> illegalArgumentExceptionHandler(IllegalException ex) {
-    log.error("Exception information：{}", ex.getMessage());
+    getError(ex);
     return new ResponseEntity<>(Result.error(ex.getMessage()), HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(BaseException.class)
   public ResponseEntity<Result> baseExceptionHandler(BaseException ex) {
-    log.error("Exception information：{}", ex.getMessage());
+    getError(ex);
     return new ResponseEntity<>(Result.error(ex.getMessage()), HttpStatus.OK);
   }
 
   @ExceptionHandler(DataAccessException.class)
   public ResponseEntity<Result> exceptionHandler(SQLIntegrityConstraintViolationException ex) {
-    log.error("Exception information：{}", ex.getMessage());
+    getError(ex);
     String message = ex.getMessage();
     if (message.contains("Duplicate entry")) {
       return new ResponseEntity<>(
@@ -46,5 +46,9 @@ public class GlobalExceptionHandler {
       return new ResponseEntity<>(
           Result.error(MessageConstant.UNKNOWN_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  private void getError(Exception ex) {
+    log.error("Exception information：{}", ex.getMessage());
   }
 }

@@ -51,16 +51,21 @@ public class CategoryServiceImpl implements CategoryService {
   }
 
   public PageResult<Category> pageQuery(CategoryPageQueryDTO categoryPageQueryDTO) {
-    PageHelper.startPage(categoryPageQueryDTO.getPage(), categoryPageQueryDTO.getPageSize());
-    Page<Category> page = categoryMapper.pageQuery(categoryPageQueryDTO);
+    try {
+      PageHelper.startPage(categoryPageQueryDTO.getPage(), categoryPageQueryDTO.getPageSize());
+      Page<Category> page = categoryMapper.pageQuery(categoryPageQueryDTO);
 
-    // If the current page number value is greater than the total page number value, re-execute the
-    // query operation and use the maximum page number value as the current page number value.
-    if (categoryPageQueryDTO.getPage() > page.getPages()) {
-      PageHelper.startPage(page.getPages(), categoryPageQueryDTO.getPageSize());
-      page = categoryMapper.pageQuery(categoryPageQueryDTO);
+      // If the current page number value is greater than the total page number value, re-execute
+      // the
+      // query operation and use the maximum page number value as the current page number value.
+      if (categoryPageQueryDTO.getPage() > page.getPages()) {
+        PageHelper.startPage(page.getPages(), categoryPageQueryDTO.getPageSize());
+        page = categoryMapper.pageQuery(categoryPageQueryDTO);
+      }
+      return new PageResult<>(page.getTotal(), page.getResult());
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
-    return new PageResult<>(page.getTotal(), page.getResult());
   }
 
   public void deleteById(Long id) {

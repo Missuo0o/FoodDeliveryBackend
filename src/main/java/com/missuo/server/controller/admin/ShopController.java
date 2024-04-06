@@ -6,7 +6,6 @@ import com.missuo.common.exception.IllegalException;
 import com.missuo.common.result.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -36,7 +35,6 @@ public class ShopController {
   @Operation(summary = "Get Shop Status")
   public Result getStatus() {
     Integer status = (Integer) redisTemplate.opsForValue().get(RedisConstant.REDIS_KEY);
-    log.info("Set Shop Status：{}", Objects.equals(status, 1) ? "Open" : "Closed");
     return Result.success(status);
   }
 }

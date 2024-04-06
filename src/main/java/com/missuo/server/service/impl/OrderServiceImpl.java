@@ -110,9 +110,7 @@ public class OrderServiceImpl implements OrderService {
         MqConstant.DELAY_ORDER_ROUTING_KEY,
         longMultDelayMessage,
         message -> {
-          message
-              .getMessageProperties()
-              .setDelay(longMultDelayMessage.removeNextDelay().intValue());
+          message.getMessageProperties().setDelayLong(longMultDelayMessage.removeNextDelay());
           return message;
         });
 
@@ -179,29 +177,33 @@ public class OrderServiceImpl implements OrderService {
 
   @Override
   public PageResult<OrderVO> pageQuery(int page, int pageSize, Integer status) {
-    PageHelper.startPage(page, pageSize);
+    try {
+      PageHelper.startPage(page, pageSize);
 
-    OrdersPageQueryDTO ordersPageQueryDTO = new OrdersPageQueryDTO();
-    ordersPageQueryDTO.setUserId(BaseContext.getCurrentId());
-    ordersPageQueryDTO.setStatus(status);
-    Page<Orders> pages = orderMapper.pageQuery(ordersPageQueryDTO);
+      OrdersPageQueryDTO ordersPageQueryDTO = new OrdersPageQueryDTO();
+      ordersPageQueryDTO.setUserId(BaseContext.getCurrentId());
+      ordersPageQueryDTO.setStatus(status);
+      Page<Orders> pages = orderMapper.pageQuery(ordersPageQueryDTO);
 
-    List<OrderVO> list =
-        pages.stream()
-            .map(
-                orders -> {
-                  Long orderId = orders.getId();
-                  List<OrderDetail> orderDetails = orderDetailMapper.getByOrderId(orderId);
+      List<OrderVO> list =
+          pages.stream()
+              .map(
+                  orders -> {
+                    Long orderId = orders.getId();
+                    List<OrderDetail> orderDetails = orderDetailMapper.getByOrderId(orderId);
 
-                  OrderVO orderVO = new OrderVO();
-                  BeanUtils.copyProperties(orders, orderVO);
-                  orderVO.setOrderDetailList(orderDetails);
+                    OrderVO orderVO = new OrderVO();
+                    BeanUtils.copyProperties(orders, orderVO);
+                    orderVO.setOrderDetailList(orderDetails);
 
-                  return orderVO;
-                })
-            .collect(Collectors.toList());
+                    return orderVO;
+                  })
+              .collect(Collectors.toList());
 
-    return new PageResult<>(pages.getTotal(), list);
+      return new PageResult<>(pages.getTotal(), list);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Override

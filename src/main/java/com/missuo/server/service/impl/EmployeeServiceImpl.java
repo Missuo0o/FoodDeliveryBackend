@@ -76,19 +76,24 @@ public class EmployeeServiceImpl implements EmployeeService {
 
   @Override
   public PageResult<Employee> pageQuery(EmployeePageQueryDTO employeePageQueryDTO) {
-    PageHelper.startPage(employeePageQueryDTO.getPage(), employeePageQueryDTO.getPageSize());
-    Page<Employee> page = employeeMapper.pageQuery(employeePageQueryDTO);
+    try {
+      PageHelper.startPage(employeePageQueryDTO.getPage(), employeePageQueryDTO.getPageSize());
+      Page<Employee> page = employeeMapper.pageQuery(employeePageQueryDTO);
 
-    // If the current page number value is greater than the total page number value, re-execute the
-    // query operation and use the maximum page number value as the current page number value.
-    if (employeePageQueryDTO.getPage() > page.getPages()) {
-      PageHelper.startPage(page.getPages(), employeePageQueryDTO.getPageSize());
-      page = employeeMapper.pageQuery(employeePageQueryDTO);
+      // If the current page number value is greater than the total page number value, re-execute
+      // the
+      // query operation and use the maximum page number value as the current page number value.
+      if (employeePageQueryDTO.getPage() > page.getPages()) {
+        PageHelper.startPage(page.getPages(), employeePageQueryDTO.getPageSize());
+        page = employeeMapper.pageQuery(employeePageQueryDTO);
+      }
+
+      page.getResult().forEach(employee -> employee.setPassword(null));
+
+      return new PageResult<>(page.getTotal(), page.getResult());
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
-
-    page.getResult().forEach(employee -> employee.setPassword(null));
-
-    return new PageResult<>(page.getTotal(), page.getResult());
   }
 
   @Override

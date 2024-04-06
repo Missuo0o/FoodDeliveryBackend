@@ -47,15 +47,19 @@ public class DishServiceImpl implements DishService {
 
   @Override
   public PageResult<DishVO> pageQuery(DishPageQueryDTO dishPageQueryDTO) {
-    PageHelper.startPage(dishPageQueryDTO.getPage(), dishPageQueryDTO.getPageSize());
-    Page<DishVO> page = dishMapper.pageQuery(dishPageQueryDTO);
+    try {
+      PageHelper.startPage(dishPageQueryDTO.getPage(), dishPageQueryDTO.getPageSize());
+      Page<DishVO> page = dishMapper.pageQuery(dishPageQueryDTO);
 
-    if (dishPageQueryDTO.getPage() > page.getPages()) {
-      PageHelper.startPage(page.getPages(), dishPageQueryDTO.getPageSize());
-      page = dishMapper.pageQuery(dishPageQueryDTO);
+      if (dishPageQueryDTO.getPage() > page.getPages()) {
+        PageHelper.startPage(page.getPages(), dishPageQueryDTO.getPageSize());
+        page = dishMapper.pageQuery(dishPageQueryDTO);
+      }
+
+      return new PageResult<>(page.getTotal(), page.getResult());
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
-
-    return new PageResult<>(page.getTotal(), page.getResult());
   }
 
   @Override
