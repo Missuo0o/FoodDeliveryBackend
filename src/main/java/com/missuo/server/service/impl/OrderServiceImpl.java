@@ -29,22 +29,23 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
-  @Autowired private OrderMapper orderMapper;
-  @Autowired private OrderDetailMapper orderDetailMapper;
-  @Autowired private AddressBookMapper addressBookMapper;
-  @Autowired private ShoppingCartMapper shoppingCartMapper;
-  @Autowired private WeChatPayUtil weChatPayUtil;
-  @Autowired private UserMapper userMapper;
-  @Autowired private WebSocketServer webSocketServer;
-  @Autowired private RabbitTemplate rabbitTemplate;
+  private final OrderMapper orderMapper;
+  private final OrderDetailMapper orderDetailMapper;
+  private final AddressBookMapper addressBookMapper;
+  private final ShoppingCartMapper shoppingCartMapper;
+  private final WeChatPayUtil weChatPayUtil;
+  private final UserMapper userMapper;
+  private final WebSocketServer webSocketServer;
+  private final RabbitTemplate rabbitTemplate;
 
   @Override
   @Transactional

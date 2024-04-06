@@ -18,14 +18,17 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 public class HttpClientUtil {
 
   static final int TIMEOUT_MSEC = 5 * 1000;
+  private static final Logger log = LoggerFactory.getLogger(HttpClientUtil.class);
 
-  public String doGet(String url, Map<String, String> paramMap) {
+  public String doGet(String url, Map<String, String> paramMap) throws IOException {
     // Creating a Httpclient Object
     CloseableHttpClient httpClient = HttpClients.createDefault();
 
@@ -52,14 +55,12 @@ public class HttpClientUtil {
         result = EntityUtils.toString(response.getEntity(), "UTF-8");
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      log.error("doGet: {}", e.getMessage());
     } finally {
-      try {
+      if (response != null) {
         response.close();
-        httpClient.close();
-      } catch (IOException e) {
-        e.printStackTrace();
       }
+      httpClient.close();
     }
 
     return result;
@@ -77,7 +78,7 @@ public class HttpClientUtil {
 
       // Creating a Parameter List
       if (paramMap != null) {
-        List<NameValuePair> paramList = new ArrayList();
+        List<NameValuePair> paramList = new ArrayList<>();
         for (Map.Entry<String, String> param : paramMap.entrySet()) {
           paramList.add(new BasicNameValuePair(param.getKey(), param.getValue()));
         }
@@ -93,12 +94,10 @@ public class HttpClientUtil {
 
       resultString = EntityUtils.toString(response.getEntity(), "UTF-8");
     } catch (Exception e) {
-      throw e;
+      log.error("doPost: {}", e.getMessage());
     } finally {
-      try {
+      if (response != null) {
         response.close();
-      } catch (IOException e) {
-        e.printStackTrace();
       }
     }
 
@@ -118,9 +117,7 @@ public class HttpClientUtil {
       if (paramMap != null) {
         // Constructing data in json format
         JSONObject jsonObject = new JSONObject();
-        for (Map.Entry<String, String> param : paramMap.entrySet()) {
-          jsonObject.put(param.getKey(), param.getValue());
-        }
+        jsonObject.putAll(paramMap);
         StringEntity entity = new StringEntity(jsonObject.toString(), "utf-8");
         // Set request encoding
         entity.setContentEncoding("utf-8");
@@ -136,12 +133,10 @@ public class HttpClientUtil {
 
       resultString = EntityUtils.toString(response.getEntity(), "UTF-8");
     } catch (Exception e) {
-      throw e;
+      log.error("doPost4Json: {}", e.getMessage());
     } finally {
-      try {
+      if (response != null) {
         response.close();
-      } catch (IOException e) {
-        e.printStackTrace();
       }
     }
 

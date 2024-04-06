@@ -1,5 +1,6 @@
 package com.missuo.pojo.entity;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Dish implements Serializable {
-  private static final long serialVersionUID = 1;
+  @Serial private static final long serialVersionUID = 1;
 
   private Long id;
 

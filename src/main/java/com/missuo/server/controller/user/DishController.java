@@ -7,9 +7,10 @@ import com.missuo.pojo.vo.DishVO;
 import com.missuo.server.service.DishService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,20 +19,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController("userDishController")
 @RequestMapping("/user/dish")
 @Slf4j
+@RequiredArgsConstructor
 @Tag(name = "Dish Management")
 public class DishController {
-  @Autowired private DishService dishService;
-  @Autowired private RedisTemplate<Object, Object> redisTemplate;
+  private final DishService dishService;
+  private final RedisTemplate<Object, Object> redisTemplate;
 
   @GetMapping("/list")
   @Operation
-  public Result list(Long categoryId) {
+  public Result list(@NotNull Long categoryId) {
     log.info("categoryId: {}", categoryId);
 
     String key = "dish_" + categoryId;
 
     // select from redis
     List<DishVO> list = (List<DishVO>) redisTemplate.opsForValue().get(key);
+
     if (list != null && !list.isEmpty()) {
       return Result.success(list);
     }

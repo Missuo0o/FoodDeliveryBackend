@@ -9,18 +9,19 @@ import com.missuo.server.service.AddressBookService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user/addressBook")
 @Slf4j
+@RequiredArgsConstructor
 @Tag(name = "Address Book Management")
 public class AddressBookController {
 
-  @Autowired private AddressBookService addressBookService;
+  private final AddressBookService addressBookService;
 
   @GetMapping("/list")
   @Operation(summary = "Get Address Book List")

@@ -17,17 +17,18 @@ import com.missuo.server.mapper.EmployeeMapper;
 import com.missuo.server.service.EmployeeService;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.digest.Md5Crypt;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
 
-  @Autowired private EmployeeMapper employeeMapper;
-  @Autowired private RedisTemplate<Object, Object> redisTemplate;
+  private final EmployeeMapper employeeMapper;
+  private final RedisTemplate<Object, Object> redisTemplate;
 
   public Employee login(EmployeeLoginDTO employeeLoginDTO) {
     String username = employeeLoginDTO.getUsername();

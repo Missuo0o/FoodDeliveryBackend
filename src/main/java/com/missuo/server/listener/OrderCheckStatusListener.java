@@ -6,18 +6,19 @@ import com.missuo.pojo.message.MultDelayMessage;
 import com.missuo.server.mapper.OrderMapper;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class OrderCheckStatusListener {
-  @Autowired private OrderMapper orderMapper;
-  @Autowired private RabbitTemplate rabbitTemplate;
+  private final OrderMapper orderMapper;
+  private final RabbitTemplate rabbitTemplate;
 
   @RabbitListener(
       bindings =

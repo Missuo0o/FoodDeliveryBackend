@@ -8,7 +8,7 @@ import com.missuo.server.service.SetmealService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,9 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController("userSetmealController")
 @RequestMapping("/user/setmeal")
+@RequiredArgsConstructor
 @Tag(name = "Setmeal Management")
 public class SetmealController {
-  @Autowired private SetmealService setmealService;
+  private final SetmealService setmealService;
 
   @GetMapping("/list")
   @Operation(summary = "Get Setmeal List")

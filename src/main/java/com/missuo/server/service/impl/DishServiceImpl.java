@@ -18,16 +18,17 @@ import com.missuo.server.service.DishService;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class DishServiceImpl implements DishService {
-  @Autowired private DishMapper dishMapper;
-  @Autowired private DishFlavorMapper dishFlavorMapper;
-  @Autowired private SetmealDishMapper setmealDishMapper;
+  private final DishMapper dishMapper;
+  private final DishFlavorMapper dishFlavorMapper;
+  private final SetmealDishMapper setmealDishMapper;
 
   @Override
   @Transactional
@@ -63,10 +64,6 @@ public class DishServiceImpl implements DishService {
     // Presence of dishes on sale
 
     List<Dish> byIds = dishMapper.getByIds(ids);
-
-    //    if (byIds == null || byIds.isEmpty()) {
-    //      return;
-    //    }
 
     if (byIds.stream().anyMatch(dish -> Objects.equals(dish.getStatus(), StatusConstant.ENABLE))) {
       throw new DeletionNotAllowedException(MessageConstant.DISH_ON_SALE);

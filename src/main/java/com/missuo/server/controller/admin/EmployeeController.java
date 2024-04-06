@@ -17,11 +17,12 @@ import com.missuo.pojo.vo.EmployeeLoginVO;
 import com.missuo.server.service.EmployeeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -29,13 +30,14 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/admin/employee")
 @Slf4j
+@RequiredArgsConstructor
 @Tag(name = "Employee Management")
 public class EmployeeController {
 
-  @Autowired private EmployeeService employeeService;
-  @Autowired private JwtProperties jwtProperties;
-  @Autowired private JwtUtil jwtUtil;
-  @Autowired private RedisTemplate<Object, Object> redisTemplate;
+  private final EmployeeService employeeService;
+  private final JwtProperties jwtProperties;
+  private final JwtUtil jwtUtil;
+  private final RedisTemplate<Object, Object> redisTemplate;
 
   @PostMapping("/login")
   @Operation(summary = "Employee Login")
@@ -88,7 +90,7 @@ public class EmployeeController {
 
   @PutMapping("/status/{status}")
   @Operation(summary = "Employee Start or Stop")
-  public Result startOrStop(@PathVariable Integer status, Long id) {
+  public Result startOrStop(@PathVariable Integer status, @NotNull Long id) {
     if (status != 1 && status != 0) {
       throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
     }

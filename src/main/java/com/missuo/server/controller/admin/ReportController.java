@@ -7,8 +7,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,9 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/admin/report")
 @Slf4j
+@RequiredArgsConstructor
 @Tag(name = "Report Management")
 public class ReportController {
-  @Autowired private ReportService reportService;
+  private final ReportService reportService;
 
   @GetMapping("/turnoverStatistics")
   @Operation(summary = "Turnover Statistics")

@@ -3,6 +3,7 @@ package com.missuo.pojo.entity;
 import com.missuo.server.annotation.OneOrZeroValid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AddressBook implements Serializable {
-  private static final long serialVersionUID = 1;
+  @Serial private static final long serialVersionUID = 1;
 
   private Long id;
 

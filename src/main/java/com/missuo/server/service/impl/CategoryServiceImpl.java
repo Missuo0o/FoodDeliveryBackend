@@ -14,16 +14,17 @@ import com.missuo.server.mapper.DishMapper;
 import com.missuo.server.mapper.SetmealMapper;
 import com.missuo.server.service.CategoryService;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
-  @Autowired private CategoryMapper categoryMapper;
-  @Autowired private DishMapper dishMapper;
-  @Autowired private SetmealMapper setmealMapper;
+  private final CategoryMapper categoryMapper;
+  private final DishMapper dishMapper;
+  private final SetmealMapper setmealMapper;
 
   public void update(CategoryDTO categoryDTO) {
     Category category = new Category();

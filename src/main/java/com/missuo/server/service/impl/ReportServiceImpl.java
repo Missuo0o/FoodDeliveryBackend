@@ -16,18 +16,19 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class ReportServiceImpl implements ReportService {
-  @Autowired private OrderMapper orderMapper;
-  @Autowired private UserMapper userMapper;
-  @Autowired private WorkspaceService workspaceService;
+  private final OrderMapper orderMapper;
+  private final UserMapper userMapper;
+  private final WorkspaceService workspaceService;
 
   @Override
   public TurnoverReportVO getTurnoversStatistics(LocalDate begin, LocalDate end) {

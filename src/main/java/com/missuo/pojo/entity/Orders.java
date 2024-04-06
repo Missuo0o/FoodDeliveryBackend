@@ -1,5 +1,6 @@
 package com.missuo.pojo.entity;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -22,7 +23,7 @@ public class Orders implements Serializable {
   public static final Integer UN_PAID = 0;
   public static final Integer PAID = 1;
   public static final Integer REFUND = 2;
-  private static final long serialVersionUID = 1;
+  @Serial private static final long serialVersionUID = 1;
   private Long id;
 
   private String number;

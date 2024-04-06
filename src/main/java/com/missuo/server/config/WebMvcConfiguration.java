@@ -6,9 +6,9 @@ import com.missuo.server.interceptor.JwtTokenUserInterceptor;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.models.GroupedOpenApi;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -19,10 +19,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @Slf4j
+@RequiredArgsConstructor
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
-  @Autowired private JwtTokenAdminInterceptor jwtTokenAdminInterceptor;
-  @Autowired private JwtTokenUserInterceptor jwtTokenUserInterceptor;
+  private final JwtTokenAdminInterceptor jwtTokenAdminInterceptor;
+  private final JwtTokenUserInterceptor jwtTokenUserInterceptor;
 
   public void addInterceptors(InterceptorRegistry registry) {
     log.info("Start registering a custom interceptor...");

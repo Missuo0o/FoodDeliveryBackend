@@ -11,23 +11,25 @@ import com.missuo.pojo.dto.UserLoginDTO;
 import com.missuo.pojo.entity.User;
 import com.missuo.server.mapper.UserMapper;
 import com.missuo.server.service.UserService;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-  @Autowired private HttpClientUtil httpClientUtil;
-  @Autowired private WeChatProperties weChatProperties;
-  @Autowired private UserMapper userMapper;
-  @Autowired private RedisTemplate<Object, Object> redisTemplate;
+  private final HttpClientUtil httpClientUtil;
+  private final WeChatProperties weChatProperties;
+  private final UserMapper userMapper;
+  private final RedisTemplate<Object, Object> redisTemplate;
 
   @Override
-  public User vxLogin(UserLoginDTO userLoginDTO) {
+  public User vxLogin(UserLoginDTO userLoginDTO) throws IOException {
     Map<String, String> map = new HashMap<>();
 
     map.put(WeChatConstant.APP_ID, weChatProperties.getAppid());

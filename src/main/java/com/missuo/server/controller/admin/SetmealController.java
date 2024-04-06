@@ -10,9 +10,10 @@ import com.missuo.pojo.vo.SetmealVO;
 import com.missuo.server.service.SetmealService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -20,9 +21,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/admin/setmeal")
 @Slf4j
+@RequiredArgsConstructor
 @Tag(name = "Setmeal Management")
 public class SetmealController {
-  @Autowired private SetmealService setmealService;
+  private final SetmealService setmealService;
 
   @PostMapping
   @Operation(summary = "Add Setmeal")
@@ -70,7 +72,7 @@ public class SetmealController {
   @PutMapping("/status/{status}")
   @Operation(summary = "Start or Stop Setmeal")
   @CacheEvict(value = "setmealCache", allEntries = true)
-  public Result startOrStop(@PathVariable Integer status, Long id) {
+  public Result startOrStop(@PathVariable Integer status, @NotNull Long id) {
     if (status != 1 && status != 0) {
       throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
     }

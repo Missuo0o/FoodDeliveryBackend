@@ -3,15 +3,16 @@ package com.missuo.task;
 import com.missuo.pojo.entity.Orders;
 import com.missuo.server.mapper.OrderMapper;
 import java.time.LocalDateTime;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class OrderTask {
-  @Autowired private OrderMapper orderMapper;
+  private final OrderMapper orderMapper;
 
   //  @Scheduled(cron = "0 * * * * ?")
   //  public void processTimeoutOrder() {

@@ -6,17 +6,18 @@ import com.missuo.server.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController("userCategoryController")
 @RequestMapping("/user/category")
+@RequiredArgsConstructor
 @Tag(name = "Category Management")
 public class CategoryController {
 
-  @Autowired private CategoryService categoryService;
+  private final CategoryService categoryService;
 
   @GetMapping("/list")
   @Operation(summary = "Get Category List")

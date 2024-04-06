@@ -11,10 +11,11 @@ import com.missuo.pojo.vo.DishVO;
 import com.missuo.server.service.DishService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Set;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -23,9 +24,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin/dish")
 @Tag(name = "Dish Management")
 @Slf4j
+@RequiredArgsConstructor
 public class DishController {
-  @Autowired private DishService dishService;
-  @Autowired private RedisTemplate<Object, Object> redisTemplate;
+  private final DishService dishService;
+  private final RedisTemplate<Object, Object> redisTemplate;
 
   @PostMapping
   @Operation(summary = "Add Dish")
@@ -72,7 +74,7 @@ public class DishController {
 
   @PutMapping("/status/{status}")
   @Operation(summary = "Start or Stop Dish")
-  public Result startOrStop(@PathVariable Integer status, Long id) {
+  public Result startOrStop(@PathVariable Integer status, @NotNull Long id) {
     if (status != 1 && status != 0) {
       throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
     }

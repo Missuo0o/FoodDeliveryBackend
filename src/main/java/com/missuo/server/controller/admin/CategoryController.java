@@ -10,9 +10,10 @@ import com.missuo.pojo.entity.Category;
 import com.missuo.server.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,9 +21,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin/category")
 @Tag(name = "Category Management")
 @Slf4j
+@AllArgsConstructor
 public class CategoryController {
 
-  @Autowired private CategoryService categoryService;
+  private final CategoryService categoryService;
 
   @PostMapping
   @Operation(summary = "Add Category")
@@ -62,7 +64,7 @@ public class CategoryController {
 
   @PutMapping("/status/{status}")
   @Operation(summary = "Start or Stop Category")
-  public Result startOrStop(@PathVariable Integer status, Long id) {
+  public Result startOrStop(@PathVariable Integer status, @NotNull Long id) {
     if (status != 1 && status != 0) {
       throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
     }

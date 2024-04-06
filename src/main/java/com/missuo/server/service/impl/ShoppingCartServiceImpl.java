@@ -13,15 +13,16 @@ import com.missuo.server.mapper.ShoppingCartMapper;
 import com.missuo.server.service.ShoppingCartService;
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class ShoppingCartServiceImpl implements ShoppingCartService {
-  @Autowired private ShoppingCartMapper shoppingCartMapper;
-  @Autowired private DishMapper dishMapper;
-  @Autowired private SetmealMapper setmealMapper;
+  private final ShoppingCartMapper shoppingCartMapper;
+  private final DishMapper dishMapper;
+  private final SetmealMapper setmealMapper;
 
   @Override
   public void addShoppingCart(ShoppingCartDTO shoppingCartDTO) {
@@ -66,9 +67,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
   @Override
   public List<ShoppingCart> showShoppingCart() {
     Long currentId = BaseContext.getCurrentId();
-    List<ShoppingCart> list =
-        shoppingCartMapper.list(ShoppingCart.builder().userId(currentId).build());
-    return list;
+    return shoppingCartMapper.list(ShoppingCart.builder().userId(currentId).build());
   }
 
   @Override

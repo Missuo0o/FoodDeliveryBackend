@@ -9,21 +9,25 @@ import com.missuo.common.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
+@RequiredArgsConstructor
 public class JwtTokenUserInterceptor implements HandlerInterceptor {
 
-  @Autowired private JwtProperties jwtProperties;
-  @Autowired private JwtUtil jwtUtil;
-  @Autowired private RedisTemplate<Object, Object> redisTemplate;
+  private final JwtProperties jwtProperties;
+  private final JwtUtil jwtUtil;
+  private final RedisTemplate<Object, Object> redisTemplate;
 
   public boolean preHandle(
-      HttpServletRequest request, HttpServletResponse response, Object handler) {
+      @NonNull HttpServletRequest request,
+      @NonNull HttpServletResponse response,
+      @NonNull Object handler) {
     // Determine whether the currently intercepted method is the controller's method or other
     // resources
     if (!(handler instanceof HandlerMethod)) {
@@ -44,8 +48,6 @@ public class JwtTokenUserInterceptor implements HandlerInterceptor {
       }
 
     } catch (Exception ex) {
-      //            response.setStatus(401);
-      //            return false;
       throw new UserNotLoginException(MessageConstant.USER_NOT_LOGIN);
     }
   }

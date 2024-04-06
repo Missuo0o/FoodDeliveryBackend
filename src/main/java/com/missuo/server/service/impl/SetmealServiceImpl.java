@@ -20,16 +20,17 @@ import com.missuo.server.mapper.SetmealMapper;
 import com.missuo.server.service.SetmealService;
 import java.util.List;
 import java.util.Objects;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class SetmealServiceImpl implements SetmealService {
-  @Autowired private SetmealMapper setmealMapper;
-  @Autowired private SetmealDishMapper setmealDishMapper;
-  @Autowired private DishMapper dishMapper;
+  private final SetmealMapper setmealMapper;
+  private final SetmealDishMapper setmealDishMapper;
+  private final DishMapper dishMapper;
 
   @Override
   @Transactional

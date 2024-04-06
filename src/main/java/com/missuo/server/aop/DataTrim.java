@@ -1,17 +1,18 @@
 package com.missuo.server.aop;
 
 import com.missuo.common.utils.TrimStrUtil;
+import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 @Aspect
+@RequiredArgsConstructor
 public class DataTrim {
-  @Autowired private TrimStrUtil trimStrUtil;
+  private final TrimStrUtil trimStrUtil;
 
   @Pointcut(
       "execution (* com.missuo.server.service.*Service.update (..)) || execution (* com.missuo.server.service.*Service.save (..))")

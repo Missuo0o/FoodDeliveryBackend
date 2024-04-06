@@ -7,17 +7,18 @@ import com.missuo.server.service.ShoppingCartService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user/shoppingCart")
 @Tag(name = "Shopping Cart Management")
+@RequiredArgsConstructor
 @Slf4j
 public class ShoppingCartController {
-  @Autowired private ShoppingCartService shoppingCartService;
+  private final ShoppingCartService shoppingCartService;
 
   @PostMapping("/add")
   @Operation(summary = "Add to Shopping Cart")

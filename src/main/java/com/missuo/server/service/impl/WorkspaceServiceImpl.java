@@ -17,16 +17,17 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class WorkspaceServiceImpl implements WorkspaceService {
 
-  @Autowired private OrderMapper orderMapper;
-  @Autowired private UserMapper userMapper;
-  @Autowired private DishMapper dishMapper;
-  @Autowired private SetmealMapper setmealMapper;
+  private final OrderMapper orderMapper;
+  private final UserMapper userMapper;
+  private final DishMapper dishMapper;
+  private final SetmealMapper setmealMapper;
 
   public BusinessDataVO getBusinessData(LocalDateTime begin, LocalDateTime end) {
     Map<String, Object> map = new HashMap<>();

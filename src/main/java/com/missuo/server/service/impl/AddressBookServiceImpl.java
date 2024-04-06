@@ -5,13 +5,14 @@ import com.missuo.pojo.entity.AddressBook;
 import com.missuo.server.mapper.AddressBookMapper;
 import com.missuo.server.service.AddressBookService;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class AddressBookServiceImpl implements AddressBookService {
-  @Autowired private AddressBookMapper addressBookMapper;
+  private final AddressBookMapper addressBookMapper;
 
   public List<AddressBook> list(AddressBook addressBook) {
     return addressBookMapper.list(addressBook);

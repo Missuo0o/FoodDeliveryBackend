@@ -11,17 +11,18 @@ import com.missuo.pojo.vo.OrderVO;
 import com.missuo.server.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController("adminOrderController")
 @RequestMapping("/admin/order")
 @Slf4j
+@RequiredArgsConstructor
 @Tag(name = "Order Management")
 public class OrderController {
-  @Autowired private OrderService orderService;
+  private final OrderService orderService;
 
   @GetMapping("/conditionSearch")
   @Operation(summary = "Order Search")

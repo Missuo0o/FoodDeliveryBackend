@@ -2,7 +2,6 @@ package com.missuo.common.json;
 
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
@@ -34,8 +33,7 @@ public class JacksonObjectMapper extends ObjectMapper {
     this.configure(FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     // Compatible handling of attributes that do not exist during deserialization
-    this.getDeserializationConfig()
-        .withoutFeatures(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+    this.getDeserializationConfig();
 
     SimpleModule simpleModule =
         new SimpleModule()

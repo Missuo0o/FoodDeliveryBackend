@@ -10,11 +10,12 @@ import com.missuo.pojo.vo.UserLoginVO;
 import com.missuo.server.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,16 +26,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/user/user")
 @Tag(name = "User Management")
+@RequiredArgsConstructor
 @Slf4j
 public class UserController {
-  @Autowired private UserService userService;
-  @Autowired private JwtProperties jwtProperties;
-  @Autowired private JwtUtil jwtUtil;
-  @Autowired private RedisTemplate<Object, Object> redisTemplate;
+  private final UserService userService;
+  private final JwtProperties jwtProperties;
+  private final JwtUtil jwtUtil;
+  private final RedisTemplate<Object, Object> redisTemplate;
 
   @PostMapping("/login")
   @Operation(summary = "User Login")
-  public Result login(@Validated @RequestBody UserLoginDTO userLoginDTO) {
+  public Result login(@Validated @RequestBody UserLoginDTO userLoginDTO) throws IOException {
     log.info("User Login：{}", userLoginDTO);
     User user = userService.vxLogin(userLoginDTO);
 

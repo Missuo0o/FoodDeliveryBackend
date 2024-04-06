@@ -5,17 +5,15 @@ import com.alibaba.fastjson.JSONObject;
 import com.missuo.common.properties.WeChatProperties;
 import com.wechat.pay.contrib.apache.httpclient.WechatPayHttpClientBuilder;
 import com.wechat.pay.contrib.apache.httpclient.util.PemUtil;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.security.PrivateKey;
 import java.security.Signature;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
+import java.util.*;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -25,32 +23,30 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class WeChatPayUtil {
 
-  // WeChat payment order interface address
+  // WeChat's payment order interface address
   public static final String JSAPI = "https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi";
 
   // Refund application interface address
   public static final String REFUNDS = "https://api.mch.weixin.qq.com/v3/refund/domestic/refunds";
 
-  @Autowired private WeChatProperties weChatProperties;
+  private final WeChatProperties weChatProperties;
 
   private CloseableHttpClient getClient() {
-    PrivateKey merchantPrivateKey = null;
+    PrivateKey merchantPrivateKey;
     try {
       merchantPrivateKey =
-          PemUtil.loadPrivateKey(
-              new FileInputStream(new File(weChatProperties.getPrivateKeyFilePath())));
+          PemUtil.loadPrivateKey(new FileInputStream(weChatProperties.getPrivateKeyFilePath()));
       // Load platform certificate file
       X509Certificate x509Certificate =
-          PemUtil.loadCertificate(
-              new FileInputStream(new File(weChatProperties.getWeChatPayCertFilePath())));
+          PemUtil.loadCertificate(new FileInputStream(weChatProperties.getWeChatPayCertFilePath()));
 
-      List<X509Certificate> wechatPayCertificates = Arrays.asList(x509Certificate);
+      List<X509Certificate> wechatPayCertificates = Collections.singletonList(x509Certificate);
 
       WechatPayHttpClientBuilder builder =
           WechatPayHttpClientBuilder.create()
@@ -60,18 +56,20 @@ public class WeChatPayUtil {
                   merchantPrivateKey)
               .withWechatPay(wechatPayCertificates);
 
-      // The Http Client constructed through Wechat Pay Http Client Builder will automatically
+      // The Http Client constructed through WeChat Pay Http Client Builder will automatically
       // handle signature and verification.
-      CloseableHttpClient httpClient = builder.build();
-      return httpClient;
+      return builder.build();
     } catch (FileNotFoundException e) {
-      e.printStackTrace();
       return null;
     }
   }
 
   private String post(String url, String body) throws Exception {
     CloseableHttpClient httpClient = getClient();
+
+    if (httpClient == null) {
+      return null;
+    }
 
     HttpPost httpPost = new HttpPost(url);
     httpPost.addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.toString());
@@ -81,8 +79,7 @@ public class WeChatPayUtil {
 
     CloseableHttpResponse response = httpClient.execute(httpPost);
     try {
-      String bodyAsString = EntityUtils.toString(response.getEntity());
-      return bodyAsString;
+      return EntityUtils.toString(response.getEntity());
     } finally {
       httpClient.close();
       response.close();
@@ -91,7 +88,9 @@ public class WeChatPayUtil {
 
   private String get(String url) throws Exception {
     CloseableHttpClient httpClient = getClient();
-
+    if (httpClient == null) {
+      return null;
+    }
     HttpGet httpGet = new HttpGet(url);
     httpGet.addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.toString());
     httpGet.addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString());
@@ -99,8 +98,7 @@ public class WeChatPayUtil {
 
     CloseableHttpResponse response = httpClient.execute(httpGet);
     try {
-      String bodyAsString = EntityUtils.toString(response.getEntity());
-      return bodyAsString;
+      return EntityUtils.toString(response.getEntity());
     } finally {
       httpClient.close();
       response.close();
@@ -118,8 +116,7 @@ public class WeChatPayUtil {
 
     JSONObject amount = new JSONObject();
     amount.put(
-        "total",
-        total.multiply(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP).intValue());
+        "total", total.multiply(new BigDecimal(100)).setScale(2, RoundingMode.HALF_UP).intValue());
     amount.put("currency", "CNY");
 
     jsonObject.put("amount", amount);
@@ -160,8 +157,7 @@ public class WeChatPayUtil {
 
       Signature signature = Signature.getInstance("SHA256withRSA");
       signature.initSign(
-          PemUtil.loadPrivateKey(
-              new FileInputStream(new File(weChatProperties.getPrivateKeyFilePath()))));
+          PemUtil.loadPrivateKey(new FileInputStream(weChatProperties.getPrivateKeyFilePath())));
       signature.update(message);
       String packageSign = Base64.getEncoder().encodeToString(signature.sign());
 
@@ -178,7 +174,7 @@ public class WeChatPayUtil {
     return jsonObject;
   }
 
-  public String refund(String outTradeNo, String outRefundNo, BigDecimal refund, BigDecimal total)
+  public void refund(String outTradeNo, String outRefundNo, BigDecimal refund, BigDecimal total)
       throws Exception {
     JSONObject jsonObject = new JSONObject();
     jsonObject.put("out_trade_no", outTradeNo);
@@ -187,10 +183,9 @@ public class WeChatPayUtil {
     JSONObject amount = new JSONObject();
     amount.put(
         "refund",
-        refund.multiply(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP).intValue());
+        refund.multiply(new BigDecimal(100)).setScale(2, RoundingMode.HALF_UP).intValue());
     amount.put(
-        "total",
-        total.multiply(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP).intValue());
+        "total", total.multiply(new BigDecimal(100)).setScale(2, RoundingMode.HALF_UP).intValue());
     amount.put("currency", "CNY");
 
     jsonObject.put("amount", amount);
@@ -199,6 +194,6 @@ public class WeChatPayUtil {
     String body = jsonObject.toJSONString();
 
     // Call the refund application interface
-    return post(REFUNDS, body);
+    post(REFUNDS, body);
   }
 }

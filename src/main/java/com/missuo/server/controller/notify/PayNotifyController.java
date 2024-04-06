@@ -11,18 +11,19 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.entity.ContentType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/notify")
+@RequiredArgsConstructor
 @Slf4j
 public class PayNotifyController {
-  @Autowired private OrderService orderService;
-  @Autowired private WeChatProperties weChatProperties;
+  private final OrderService orderService;
+  private final WeChatProperties weChatProperties;
 
   @RequestMapping("/paySuccess")
   public void paySuccessNotify(HttpServletRequest request, HttpServletResponse response)
@@ -36,7 +37,7 @@ public class PayNotifyController {
     // Parse the decrypted request body
     JSONObject jsonObject = JSON.parseObject(plainText);
     String outTradeNo = jsonObject.getString("out_trade_no");
-    String transactionId = jsonObject.getString("transaction_id");
+    //    String transactionId = jsonObject.getString("transaction_id");
 
     orderService.paySuccess(outTradeNo);
 
@@ -46,7 +47,7 @@ public class PayNotifyController {
   private String readData(HttpServletRequest request) throws Exception {
     BufferedReader reader = request.getReader();
     StringBuilder result = new StringBuilder();
-    String line = null;
+    String line;
     while ((line = reader.readLine()) != null) {
       if (!result.isEmpty()) {
         result.append("\n");
@@ -65,13 +66,10 @@ public class PayNotifyController {
 
     AesUtil aesUtil = new AesUtil(weChatProperties.getApiV3Key().getBytes(StandardCharsets.UTF_8));
     // Decrypt the data
-    String plainText =
-        aesUtil.decryptToString(
-            associatedData.getBytes(StandardCharsets.UTF_8),
-            nonce.getBytes(StandardCharsets.UTF_8),
-            ciphertext);
-
-    return plainText;
+    return aesUtil.decryptToString(
+        associatedData.getBytes(StandardCharsets.UTF_8),
+        nonce.getBytes(StandardCharsets.UTF_8),
+        ciphertext);
   }
 
   private void responseToWeixin(HttpServletResponse response) throws Exception {
