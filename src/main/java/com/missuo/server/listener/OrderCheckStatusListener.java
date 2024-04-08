@@ -40,7 +40,7 @@ public class OrderCheckStatusListener {
           MqConstant.DELAY_ORDER_ROUTING_KEY,
           msg,
           message -> {
-            message.getMessageProperties().setDelay(nextDelay.intValue());
+            message.getMessageProperties().setDelayLong(nextDelay);
             return message;
           });
     } else {

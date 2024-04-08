@@ -73,8 +73,6 @@ springdoc:
       paths-to-match: '/**'
       packages-to-scan: com.missuo.server.controller
 
-knife4j:
-  enable: true
 
 alioss:
   endpoint: ${alioss.endpoint}
