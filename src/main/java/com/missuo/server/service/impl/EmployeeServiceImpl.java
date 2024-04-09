@@ -8,6 +8,7 @@ import com.missuo.common.constant.StatusConstant;
 import com.missuo.common.context.BaseContext;
 import com.missuo.common.exception.*;
 import com.missuo.common.result.PageResult;
+import com.missuo.common.utils.PasswordUtil;
 import com.missuo.pojo.dto.EmployeeDTO;
 import com.missuo.pojo.dto.EmployeeLoginDTO;
 import com.missuo.pojo.dto.EmployeePageQueryDTO;
@@ -44,10 +45,7 @@ public class EmployeeServiceImpl implements EmployeeService {
       throw new AccountNotFoundException(MessageConstant.ACCOUNT_NOT_FOUND);
     }
 
-    // Password matching
-    //        password = DigestUtils.md5DigestAsHex(password.getBytes());
-    password = Md5Crypt.md5Crypt(password.getBytes(), "$1$ShunZhang");
-    if (!password.equals(employee.getPassword())) {
+    if (PasswordUtil.checkPassword(password, employee.getPassword())) {
       // Password Error
       throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
     }
@@ -68,8 +66,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     BeanUtils.copyProperties(employeeDTO, employee);
 
     employee.setStatus(StatusConstant.ENABLE);
-    employee.setPassword(
-        Md5Crypt.md5Crypt(PasswordConstant.DEFAULT_PASSWORD.getBytes(), "$1$ShunZhang"));
+    employee.setPassword(PasswordUtil.hashPassword(employee.getPassword()));
 
     employeeMapper.insert(employee);
   }
