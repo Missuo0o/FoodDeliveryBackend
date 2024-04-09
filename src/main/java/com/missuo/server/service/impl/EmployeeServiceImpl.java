@@ -45,7 +45,7 @@ public class EmployeeServiceImpl implements EmployeeService {
       throw new AccountNotFoundException(MessageConstant.ACCOUNT_NOT_FOUND);
     }
 
-    if (PasswordUtil.checkPassword(password, employee.getPassword())) {
+    if (!PasswordUtil.checkPassword(password, employee.getPassword())) {
       // Password Error
       throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
     }
