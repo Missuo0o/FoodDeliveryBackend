@@ -72,6 +72,10 @@ springdoc:
     - group: 'default'
       paths-to-match: '/**'
       packages-to-scan: com.missuo.server.controller
+knife4j:
+  enable: true
+  setting:
+    language: EN
 
 
 alioss:

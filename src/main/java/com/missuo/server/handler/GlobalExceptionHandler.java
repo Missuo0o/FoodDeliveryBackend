@@ -5,7 +5,7 @@ import com.missuo.common.exception.BaseException;
 import com.missuo.common.exception.IllegalException;
 import com.missuo.common.exception.UserNotLoginException;
 import com.missuo.common.result.Result;
-import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -36,15 +36,14 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(DataAccessException.class)
-  public ResponseEntity<Result> exceptionHandler(SQLIntegrityConstraintViolationException ex) {
+  public ResponseEntity<Result> exceptionHandler(DataAccessException ex) {
     getError(ex);
-    String message = ex.getMessage();
+    String message = Objects.requireNonNull(ex.getRootCause()).getMessage();
     if (message.contains("Duplicate entry")) {
       return new ResponseEntity<>(
           Result.error(message.split(" ")[2] + MessageConstant.ALREADY_EXISTS), HttpStatus.OK);
     } else {
-      return new ResponseEntity<>(
-          Result.error(MessageConstant.UNKNOWN_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(Result.error(message), HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
