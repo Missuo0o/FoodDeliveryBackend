@@ -38,7 +38,7 @@ public class ShoppingCartController {
 
   @PostMapping("/sub")
   @Operation(summary = "Delete from Shopping Cart")
-  public Result sub(@RequestBody ShoppingCartDTO shoppingCartDTO) {
+  public Result sub(@Validated @RequestBody ShoppingCartDTO shoppingCartDTO) {
     log.info("Delete from Shopping Cart：{}", shoppingCartDTO);
     shoppingCartService.subShoppingCart(shoppingCartDTO);
     return Result.success();

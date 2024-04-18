@@ -72,7 +72,7 @@ public class AddressBookController {
 
   @DeleteMapping
   @Operation(summary = "Delete Address by ID")
-  public Result deleteById(Long id) {
+  public Result deleteById(@RequestParam Long id) {
     log.info("delete address book by id: {}", id);
     addressBookService.deleteById(id);
     return Result.success();

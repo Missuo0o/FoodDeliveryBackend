@@ -20,19 +20,19 @@
     <update id="update" parameterType="addressBook">
         update address_book
         <set>
-            <if test="consignee != null and consignee !=''">
+            <if test="consignee != null">
                 consignee = #{consignee},
             </if>
             <if test="sex != null">
                 sex = #{sex},
             </if>
-            <if test="phone != null and phone !=''">
+            <if test="phone != null">
                 phone = #{phone},
             </if>
-            <if test="detail != null and detail !=''">
+            <if test="detail != null">
                 detail = #{detail},
             </if>
-            <if test="label != null and label !=''">
+            <if test="label != null">
                 label = #{label},
             </if>
             <if test="isDefault != null">

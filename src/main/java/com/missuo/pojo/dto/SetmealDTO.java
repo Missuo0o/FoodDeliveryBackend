@@ -3,6 +3,7 @@ package com.missuo.pojo.dto;
 import com.missuo.pojo.entity.SetmealDish;
 import com.missuo.server.annotation.OneOrZeroValid;
 import jakarta.validation.constraints.*;
+import jakarta.validation.groups.Default;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
@@ -11,14 +12,15 @@ import lombok.Data;
 @Data
 public class SetmealDTO implements Serializable {
 
+  @NotNull(groups = Update.class)
   private Long id;
 
   @NotNull
   @Min(value = 1)
   private Long categoryId;
 
-  @NotNull
-  @Size(min = 1, max = 20)
+  @NotBlank
+  @Size(max = 20)
   private String name;
 
   @NotNull
@@ -30,11 +32,11 @@ public class SetmealDTO implements Serializable {
 
   private String description;
 
-  @NotNull
-  @Size(min = 1, max = 255)
+  @NotBlank
+  @Size(max = 255)
   private String image;
 
-  @NotNull
-  @Size(min = 1)
-  private List<SetmealDish> setmealDishes;
+  @NotEmpty private List<SetmealDish> setmealDishes;
+
+  public interface Update extends Default {}
 }

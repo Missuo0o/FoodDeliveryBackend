@@ -17,12 +17,10 @@ import com.missuo.pojo.vo.EmployeeLoginVO;
 import com.missuo.server.service.EmployeeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -82,7 +80,7 @@ public class EmployeeController {
   @GetMapping("/page")
   @Operation(summary = "Employee Page Query")
   //    https://github.com/swagger-api/swagger-core/issues/4177
-  public Result page(@ParameterObject EmployeePageQueryDTO employeePageQueryDTO) {
+  public Result page(EmployeePageQueryDTO employeePageQueryDTO) {
     log.info("Employee Page Query: {}", employeePageQueryDTO);
     PageResult<Employee> pageResult = employeeService.pageQuery(employeePageQueryDTO);
     return Result.success(pageResult);
@@ -90,7 +88,7 @@ public class EmployeeController {
 
   @PutMapping("/status/{status}")
   @Operation(summary = "Employee Start or Stop")
-  public Result startOrStop(@PathVariable Integer status, @NotNull Long id) {
+  public Result startOrStop(@PathVariable Integer status, @RequestParam Long id) {
     if (status != 1 && status != 0) {
       throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
     }
@@ -109,10 +107,7 @@ public class EmployeeController {
 
   @PutMapping
   @Operation(summary = "Employee Update")
-  public Result update(@RequestBody EmployeeDTO employeeDTO) {
-    if (employeeDTO.getId() == null) {
-      throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
-    }
+  public Result update(@Validated(EmployeeDTO.Update.class) @RequestBody EmployeeDTO employeeDTO) {
     log.info("Employee Update: {}", employeeDTO);
     employeeService.update(employeeDTO);
     return Result.success();
@@ -120,7 +115,7 @@ public class EmployeeController {
 
   @PutMapping("/editPassword")
   @Operation(summary = "Employee Update Password")
-  public Result editPassword(@RequestBody PasswordEditDTO passwordEditDTO) {
+  public Result editPassword(@Validated @RequestBody PasswordEditDTO passwordEditDTO) {
     log.info("Employee Update Password: {}", passwordEditDTO);
     employeeService.updatePassword(passwordEditDTO);
     return Result.success();

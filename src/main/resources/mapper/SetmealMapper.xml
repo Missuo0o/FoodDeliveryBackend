@@ -15,7 +15,7 @@
             <if test="categoryId != null">
                 category_id = #{categoryId},
             </if>
-            <if test="name != null and name !=''">
+            <if test="name != null">
                 name = #{name},
             </if>
             <if test="price != null">
@@ -24,7 +24,7 @@
             <if test="description != null">
                 description = #{description},
             </if>
-            <if test="image != null and image!=''">
+            <if test="image != null">
                 image = #{image},
             </if>
             <if test="updateTime != null">
@@ -51,7 +51,7 @@
     <select id="list" resultType="com.missuo.pojo.entity.Setmeal">
         select * from setmeal
         <where>
-            <if test="name != null and name != ''">
+            <if test="name != null">
                 and name like concat('%',#{name},'%')
             </if>
             <if test="categoryId != null">

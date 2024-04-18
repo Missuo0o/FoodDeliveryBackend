@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.missuo.server.annotation.OneOrZeroValid;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -19,7 +20,7 @@ public class OrdersSubmitDTO implements Serializable {
   @Range(min = 1, max = 2)
   private Integer payMethod;
 
-  @NotNull private String remark;
+  @NotBlank private String remark;
 
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   @NotNull
@@ -32,7 +33,7 @@ public class OrdersSubmitDTO implements Serializable {
   // Tableware quantity status 1 Provide according to meal size 0 Select specific quantity
   @OneOrZeroValid private Integer tablewareStatus;
 
-  @NotNull
+  @NotBlank
   @Range(min = 0, max = 10)
   private Integer tablewareNumber;
 

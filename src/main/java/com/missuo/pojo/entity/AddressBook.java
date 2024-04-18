@@ -1,7 +1,7 @@
 package com.missuo.pojo.entity;
 
 import com.missuo.server.annotation.OneOrZeroValid;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.io.Serial;
 import java.io.Serializable;
@@ -21,22 +21,22 @@ public class AddressBook implements Serializable {
 
   private Long userId;
 
-  @NotNull
-  @Size(min = 1, max = 12)
+  @NotBlank
+  @Size(max = 12)
   private String consignee;
 
-  @NotNull
+  @NotBlank
   @Size(min = 10, max = 10)
   private String phone;
 
   @OneOrZeroValid private Integer sex;
 
-  @NotNull
-  @Size(min = 1, max = 200)
+  @NotBlank
+  @Size(max = 200)
   private String detail;
 
-  @NotNull
-  @Size(min = 1, max = 20)
+  @NotBlank
+  @Size(max = 20)
   private String label;
 
   // 0 no 1 yes

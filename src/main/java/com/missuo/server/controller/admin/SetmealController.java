@@ -10,7 +10,6 @@ import com.missuo.pojo.vo.SetmealVO;
 import com.missuo.server.service.SetmealService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,10 +59,8 @@ public class SetmealController {
   @PutMapping
   @Operation(summary = "Update Setmeal")
   @CacheEvict(value = "setmealCache", allEntries = true)
-  public Result update(@Validated @RequestBody SetmealDTO setmealDTO) {
-    if (setmealDTO.getId() == null) {
-      throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
-    }
+  public Result update(@Validated(SetmealDTO.Update.class) @RequestBody SetmealDTO setmealDTO) {
+
     log.info("Update Setmeal：{}", setmealDTO);
     setmealService.update(setmealDTO);
     return Result.success();
@@ -72,7 +69,7 @@ public class SetmealController {
   @PutMapping("/status/{status}")
   @Operation(summary = "Start or Stop Setmeal")
   @CacheEvict(value = "setmealCache", allEntries = true)
-  public Result startOrStop(@PathVariable Integer status, @NotNull Long id) {
+  public Result startOrStop(@PathVariable Integer status, @RequestParam Long id) {
     if (status != 1 && status != 0) {
       throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
     }

@@ -6,7 +6,7 @@
     <select id="pageQuery" resultType="com.missuo.pojo.entity.Category">
         select * from category
         <where>
-            <if test="name != null and name != ''">
+            <if test="name != null">
                 and name like concat('%',#{name},'%')
             </if>
             <if test="type != null">
@@ -22,7 +22,7 @@
             <if test="type != null">
                 type = #{type},
             </if>
-            <if test="name != null and name != ''">
+            <if test="name != null">
                 name = #{name},
             </if>
             <if test="sort != null">

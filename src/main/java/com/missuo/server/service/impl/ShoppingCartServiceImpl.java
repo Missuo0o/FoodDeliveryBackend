@@ -31,7 +31,6 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     shoppingCart.setUserId(BaseContext.getCurrentId());
     // Determine whether the product added to the shopping cart already exists
     List<ShoppingCart> list = shoppingCartMapper.list(shoppingCart);
-    System.out.println(list.size() + "132231321321");
     // If the product already exists, update the quantity of the product in the shopping cart
     if (!list.isEmpty()) {
       ShoppingCart cart = list.getFirst();
@@ -76,9 +75,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     BeanUtils.copyProperties(shoppingCartDTO, shoppingCart);
     shoppingCart.setUserId(BaseContext.getCurrentId());
     List<ShoppingCart> list = shoppingCartMapper.list(shoppingCart);
-    if (list.isEmpty()) {
-      throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
-    }
+
     ShoppingCart cart = list.getFirst();
     if (cart.getNumber() > 1) {
       cart.setNumber(cart.getNumber() - 1);

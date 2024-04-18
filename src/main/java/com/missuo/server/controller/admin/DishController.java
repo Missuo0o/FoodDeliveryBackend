@@ -11,7 +11,6 @@ import com.missuo.pojo.vo.DishVO;
 import com.missuo.server.service.DishService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -74,7 +73,7 @@ public class DishController {
 
   @PutMapping("/status/{status}")
   @Operation(summary = "Start or Stop Dish")
-  public Result startOrStop(@PathVariable Integer status, @NotNull Long id) {
+  public Result startOrStop(@PathVariable Integer status, @RequestParam Long id) {
     if (status != 1 && status != 0) {
       throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
     }

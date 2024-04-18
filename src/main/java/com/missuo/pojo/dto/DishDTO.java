@@ -11,10 +11,10 @@ import lombok.Data;
 @Data
 public class DishDTO implements Serializable {
 
-  private Long id;
+  @NotNull private Long id;
 
-  @NotNull
-  @Size(min = 1, max = 20)
+  @NotBlank
+  @Size(max = 20)
   private String name;
 
   @NotNull
@@ -26,7 +26,7 @@ public class DishDTO implements Serializable {
   @DecimalMax(value = "99999.99")
   private BigDecimal price;
 
-  @NotNull
+  @NotBlank
   @Size(min = 1, max = 255)
   private String image;
 

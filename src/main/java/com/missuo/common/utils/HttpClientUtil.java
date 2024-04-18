@@ -42,6 +42,7 @@ public class HttpClientUtil {
           builder.addParameter(key, paramMap.get(key));
         }
       }
+
       URI uri = builder.build();
 
       // Create a get request

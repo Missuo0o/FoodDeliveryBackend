@@ -19,7 +19,6 @@ import com.missuo.server.service.EmployeeService;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.codec.digest.Md5Crypt;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -131,14 +130,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     Long currentId = BaseContext.getCurrentId();
     Employee employee = employeeMapper.getById(currentId);
 
-    String oldPassword =
-        Md5Crypt.md5Crypt(passwordEditDTO.getOldPassword().getBytes(), "$1$ShunZhang");
-    if (!oldPassword.equals(employee.getPassword())) {
+    if (!PasswordUtil.checkPassword(passwordEditDTO.getOldPassword(), employee.getPassword())) {
+      // Password Error
       throw new PasswordEditFailedException(MessageConstant.PASSWORD_EDIT_FAILED);
     }
 
-    String newPassword =
-        Md5Crypt.md5Crypt(passwordEditDTO.getNewPassword().getBytes(), "$1$ShunZhang");
+    String newPassword = PasswordUtil.hashPassword(passwordEditDTO.getNewPassword());
     Employee newEmployee = Employee.builder().id(currentId).password(newPassword).build();
 
     employeeMapper.update(newEmployee);

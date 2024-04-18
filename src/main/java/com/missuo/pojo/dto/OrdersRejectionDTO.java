@@ -1,5 +1,6 @@
 package com.missuo.pojo.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
@@ -10,7 +11,7 @@ public class OrdersRejectionDTO implements Serializable {
 
   @NotNull private Long id;
 
-  @NotNull
-  @Size(min = 1, max = 50)
+  @NotBlank
+  @Size(max = 50)
   private String rejectionReason;
 }

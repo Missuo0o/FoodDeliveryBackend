@@ -10,7 +10,6 @@ import com.missuo.pojo.entity.Category;
 import com.missuo.server.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +44,7 @@ public class CategoryController {
 
   @DeleteMapping
   @Operation(summary = "Delete Category")
-  public Result deleteById(Long id) {
+  public Result deleteById(@RequestParam Long id) {
     log.info("Delete Category：{}", id);
     categoryService.deleteById(id);
     return Result.success();
@@ -53,10 +52,7 @@ public class CategoryController {
 
   @PutMapping
   @Operation(summary = "Update Category")
-  public Result update(@Validated @RequestBody CategoryDTO categoryDTO) {
-    if (categoryDTO.getId() == null) {
-      throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
-    }
+  public Result update(@Validated(CategoryDTO.Update.class) @RequestBody CategoryDTO categoryDTO) {
     log.info("Update Category：{}", categoryDTO);
     categoryService.update(categoryDTO);
     return Result.success();
@@ -64,7 +60,7 @@ public class CategoryController {
 
   @PutMapping("/status/{status}")
   @Operation(summary = "Start or Stop Category")
-  public Result startOrStop(@PathVariable Integer status, @NotNull Long id) {
+  public Result startOrStop(@PathVariable Integer status, @RequestParam Long id) {
     if (status != 1 && status != 0) {
       throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
     }

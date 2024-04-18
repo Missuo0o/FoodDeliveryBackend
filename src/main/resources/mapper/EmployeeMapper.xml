@@ -5,22 +5,22 @@
     <update id="update" parameterType="Employee">
         update employee
         <set>
-            <if test="name != null and name != ''">
+            <if test="name != null">
                 name = #{name},
             </if>
-            <if test="username != null and username != ''">
+            <if test="username != null">
                 username = #{username},
             </if>
-            <if test="password != null and password != ''">
+            <if test="password != null">
                 password = #{password},
             </if>
-            <if test="phone != null and phone != ''">
+            <if test="phone != null">
                 phone = #{phone},
             </if>
             <if test="sex != null">
                 sex = #{sex},
             </if>
-            <if test="idNumber != null and idNumber != ''">
+            <if test="idNumber != null">
                 id_number = #{idNumber},
             </if>
             <if test="updateTime != null">
@@ -39,7 +39,7 @@
     <select id="pageQuery" resultType="com.missuo.pojo.entity.Employee">
         select * from employee
         <where>
-            <if test="name != null and name != ''">
+            <if test="name != null">
                 and name like concat('%',#{name},'%')
             </if>
         </where>

@@ -13,7 +13,7 @@
     <update id="update">
         update dish
         <set>
-            <if test="name != null and name != ''">
+            <if test="name != null">
                 name = #{name},
             </if>
             <if test="categoryId != null">
@@ -22,7 +22,7 @@
             <if test="price != null">
                 price = #{price},
             </if>
-            <if test="image != null and image != ''">
+            <if test="image != null">
                 image = #{image},
             </if>
             <if test="description != null">
@@ -54,7 +54,7 @@
         from dish d
         left join category c on d.category_id = c.id
         <where>
-            <if test="name != null and name != ''">
+            <if test="name != null">
                 and d.name like concat('%', #{name}, '%')
             </if>
             <if test="categoryId != null">
@@ -79,7 +79,7 @@
     <select id="list" resultType="com.missuo.pojo.entity.Dish">
         select * from dish
         <where>
-            <if test="name !=null and name != ''">
+            <if test="name !=null">
                 and name like concat('%', #{name}, '%')
             </if>
             <if test="categoryId != null">

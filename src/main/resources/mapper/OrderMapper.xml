@@ -16,10 +16,10 @@
     <update id="update">
         update orders
         <set>
-            <if test="cancelReason != null and cancelReason!='' ">
+            <if test="cancelReason != null">
                 cancel_reason=#{cancelReason},
             </if>
-            <if test="rejectionReason != null and rejectionReason!='' ">
+            <if test="rejectionReason != null">
                 rejection_reason=#{rejectionReason},
             </if>
             <if test="cancelTime != null">
@@ -47,10 +47,10 @@
     <select id="pageQuery" resultType="Orders">
         select * from orders
         <where>
-            <if test="number != null and number!=''">
+            <if test="number != null">
                 and number like concat('%',#{number},'%')
             </if>
-            <if test="phone != null and phone!=''">
+            <if test="phone != null and phone">
                 and phone like concat('%',#{phone},'%')
             </if>
             <if test="userId != null">
@@ -78,7 +78,7 @@
             <if test="endTime != null">
                 and order_time &lt;= #{endTime}
             </if>
-            <if test="status != null and status !=''">
+            <if test="status != null">
                 and status = #{status}
             </if>
         </where>
