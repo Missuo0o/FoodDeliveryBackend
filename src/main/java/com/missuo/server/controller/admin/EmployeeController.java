@@ -65,7 +65,6 @@ public class EmployeeController {
   @Operation(summary = "Employee Logout")
   public Result logout() {
     redisTemplate.delete("Employee_id" + BaseContext.getCurrentId());
-    BaseContext.removeCurrentId();
     return Result.success();
   }
 

@@ -51,4 +51,13 @@ public class JwtTokenUserInterceptor implements HandlerInterceptor {
       throw new UserNotLoginException(MessageConstant.USER_NOT_LOGIN);
     }
   }
+
+  @Override
+  public void afterCompletion(
+      @NonNull HttpServletRequest request,
+      @NonNull HttpServletResponse response,
+      @NonNull Object handler,
+      Exception ex) {
+    BaseContext.removeCurrentId();
+  }
 }
