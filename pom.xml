@@ -152,12 +152,11 @@
                     </excludes>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>com.github.ferstl</groupId>
-                <artifactId>depgraph-maven-plugin</artifactId>
-                <version>4.0.2</version>
-            </plugin>
-
+            <!--            <plugin>-->
+            <!--                <groupId>com.github.ferstl</groupId>-->
+            <!--                <artifactId>depgraph-maven-plugin</artifactId>-->
+            <!--                <version>4.0.2</version>-->
+            <!--            </plugin>-->
         </plugins>
     </build>
 
