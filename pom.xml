@@ -5,16 +5,16 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.4</version>
+        <version>3.2.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com</groupId>
     <artifactId>MissuoBackend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Missuo</name>
-    <description>Missuo</description>
+    <name>Shun Zhang</name>
+    <description>backend of the takeout system</description>
     <properties>
-        <java.version>21</java.version>
+        <java.version>22</java.version>
     </properties>
     <dependencies>
         <dependency>
@@ -93,11 +93,7 @@
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>3.0.3</version>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>com.baomidou</groupId>-->
-        <!--            <artifactId>mybatis-plus-boot-starter</artifactId>-->
-        <!--            <version>3.5.2</version>-->
-        <!--        </dependency>-->
+
         <dependency>
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper-spring-boot-starter</artifactId>
@@ -113,11 +109,6 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.httpcomponents</groupId>-->
-        <!--            <artifactId>httpclient</artifactId>-->
-        <!--            <version>4.5.13</version>-->
-        <!--        </dependency>-->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
@@ -144,6 +135,7 @@
             <version>0.4</version>
         </dependency>
 
+
     </dependencies>
 
     <build>
@@ -160,6 +152,12 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>com.github.ferstl</groupId>
+                <artifactId>depgraph-maven-plugin</artifactId>
+                <version>4.0.2</version>
+            </plugin>
+
         </plugins>
     </build>
 
