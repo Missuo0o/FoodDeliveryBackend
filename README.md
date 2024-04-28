@@ -24,7 +24,7 @@ The application is configured to run on port 8080 and is set up with production 
 
 You need the following installed on your system:
 
-- Java JDK 11 or newer
+- Java JDK 22
 - Maven
 - MySQL
 - RabbitMQ
