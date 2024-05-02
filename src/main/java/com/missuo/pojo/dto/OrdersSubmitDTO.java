@@ -33,7 +33,7 @@ public class OrdersSubmitDTO implements Serializable {
   // Tableware quantity status 1 Provide according to meal size 0 Select specific quantity
   @OneOrZeroValid private Integer tablewareStatus;
 
-  @NotBlank
+  @NotNull
   @Range(min = 0, max = 10)
   private Integer tablewareNumber;
 
