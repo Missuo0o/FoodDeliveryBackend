@@ -1,0 +1,8 @@
+version: 2
+updates:
+  - package-ecosystem: "maven" # 使用Maven作为包管理工具
+    directory: "/" # pom.xml的路径，项目根目录
+    schedule:
+      interval: "daily" # 每日检查更新
+    ignore:
+      - dependency-name: "org.springframework.boot" # 例如你希望忽略某些依赖项
