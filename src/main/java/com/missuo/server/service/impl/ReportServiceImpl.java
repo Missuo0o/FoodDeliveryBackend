@@ -203,7 +203,7 @@ public class ReportServiceImpl implements ReportService {
   private List<LocalDate> getLocalDates(LocalDate begin, LocalDate end) {
     List<LocalDate> dateList = new ArrayList<>();
     // Add all dates between begin and end to dateList
-    while (!begin.equals(end)) {
+    while (!begin.isAfter(end)) {
       dateList.add(begin);
       begin = begin.plusDays(1L);
     }
