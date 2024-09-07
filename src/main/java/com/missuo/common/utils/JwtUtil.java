@@ -1,11 +1,11 @@
 package com.missuo.common.utils;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Map;
 import javax.crypto.SecretKey;
@@ -15,28 +15,27 @@ import org.springframework.stereotype.Component;
 public class JwtUtil {
 
   public String createJWT(String secretKey, long ttlMillis, Map<String, Object> claims) {
-    // Specify the signature algorithm used when signing, that is, the header part
-    SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+
     // Convert the secret key string into a SecretKey object using the Keys class
     SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
 
     // Time to generate jwt
-    long expMillis = System.currentTimeMillis() + ttlMillis;
-    Date exp = new Date(expMillis);
+    Instant now = Instant.now();
+    Instant expiration = now.plus(ttlMillis, ChronoUnit.MILLIS);
 
     // Set the body of jwt
-    JwtBuilder builder =
-        Jwts.builder().setClaims(claims).signWith(key, signatureAlgorithm).setExpiration(exp);
-
-    return builder.compact();
+    return Jwts.builder()
+        .claims(claims)
+        .issuedAt(Date.from(now))
+        .expiration(Date.from(expiration))
+        .signWith(key)
+        .compact();
   }
 
   public Claims parseJWT(String secretKey, String token) {
+    SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+
     // Get DefaultJwtParser
-    return Jwts.parserBuilder()
-        .setSigningKey(secretKey.getBytes(StandardCharsets.UTF_8))
-        .build()
-        .parseClaimsJws(token)
-        .getBody();
+    return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
   }
 }
