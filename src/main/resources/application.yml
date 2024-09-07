@@ -51,13 +51,13 @@ logging:
 
 jwt:
   # Setting the secret key used for jwt signature encryption
-  admin-secret-key: missuo
+  admin-secret-key: rX7dKp9Lm2Qn5Yt8Fh3Jb6Vc1Nz4Wx0Gq7Hs9Ek6Ap3Ru2Ty5Oi8Ml1Df4
   # Setting the jwt expiration time
   admin-ttl: 7200000
   # Set the name of the token passed from the front end
   admin-token-name: token
   
-  user-secret-key: missuo0o
+  user-secret-key: e9T2Kf8Lp5Xm3Yz7Hc1Vb4Nq6Gw0Js9Dk2Ar5Uu8Oi3Pl1Mh6Ty4Fb7Rx
   user-ttl: 7200000
   user-token-name: authentication
 
