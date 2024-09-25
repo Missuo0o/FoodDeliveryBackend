@@ -9,6 +9,7 @@ import com.missuo.common.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.lang.NonNull;
@@ -44,6 +45,16 @@ public class JwtTokenUserInterceptor implements HandlerInterceptor {
         throw new UserNotLoginException(MessageConstant.USER_NOT_LOGIN);
       } else {
         BaseContext.setCurrentId(userID);
+        long currentTimeMillis = System.currentTimeMillis();
+        long expirationTime = claims.getExpiration().getTime();
+        long remainingTime = expirationTime - currentTimeMillis;
+        if (remainingTime < 5 * 60 * 1000) {
+          String newToken =
+              jwtUtil.createJWT(
+                  jwtProperties.getAdminSecretKey(), jwtProperties.getAdminTtl(), claims);
+          response.setHeader(jwtProperties.getAdminTokenName(), newToken);
+          redisTemplate.expire("User_id" + userID, 2, TimeUnit.HOURS);
+        }
         return true;
       }
 
