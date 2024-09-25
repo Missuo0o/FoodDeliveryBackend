@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.concurrent.TimeUnit;
+
 @RestController("adminShopController")
 @RequestMapping("/admin/shop")
 @Tag(name = "Shop Management")
@@ -27,7 +29,9 @@ public class ShopController {
       throw new IllegalException(MessageConstant.ILLEGAL_OPERATION);
     }
     log.info("Set Shop Status：{}", status == 1 ? "Open" : "Closed");
-    redisTemplate.opsForValue().set(RedisConstant.REDIS_KEY, status);
+    redisTemplate
+        .opsForValue()
+        .set(RedisConstant.REDIS_KEY, status, RedisConstant.REDIS_EXPIRE, TimeUnit.HOURS);
     return Result.success();
   }
 

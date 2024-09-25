@@ -1,5 +1,6 @@
 package com.missuo.server.controller.user;
 
+import com.missuo.common.constant.RedisConstant;
 import com.missuo.common.constant.StatusConstant;
 import com.missuo.common.result.Result;
 import com.missuo.pojo.entity.Dish;
@@ -8,6 +9,7 @@ import com.missuo.server.service.DishService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -44,7 +46,8 @@ public class DishController {
     dish.setStatus(StatusConstant.ENABLE);
 
     list = dishService.listWithFlavor(dish);
-    redisTemplate.opsForValue().set(key, list);
+
+    redisTemplate.opsForValue().set(key, list, RedisConstant.REDIS_EXPIRE, TimeUnit.HOURS);
 
     return Result.success(list);
   }

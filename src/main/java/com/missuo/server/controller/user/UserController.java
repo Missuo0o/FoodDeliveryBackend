@@ -1,6 +1,7 @@
 package com.missuo.server.controller.user;
 
 import com.missuo.common.constant.JwtClaimsConstant;
+import com.missuo.common.constant.RedisConstant;
 import com.missuo.common.properties.JwtProperties;
 import com.missuo.common.result.Result;
 import com.missuo.common.utils.JwtUtil;
@@ -49,7 +50,9 @@ public class UserController {
     UserLoginVO userLoginVO =
         UserLoginVO.builder().id(user.getId()).openid(user.getOpenid()).token(token).build();
 
-    redisTemplate.opsForValue().set("User_id" + user.getId(), user.getId(), 2, TimeUnit.HOURS);
+    redisTemplate
+        .opsForValue()
+        .set("User_id" + user.getId(), user.getId(), RedisConstant.REDIS_EXPIRE, TimeUnit.HOURS);
     return Result.success(userLoginVO);
   }
 }

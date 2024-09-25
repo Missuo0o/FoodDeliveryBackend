@@ -3,6 +3,7 @@ package com.missuo.server.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.missuo.common.constant.MessageConstant;
+import com.missuo.common.constant.RedisConstant;
 import com.missuo.common.constant.WeChatConstant;
 import com.missuo.common.exception.LoginFailedException;
 import com.missuo.common.properties.WeChatProperties;
@@ -51,7 +52,9 @@ public class UserServiceImpl implements UserService {
       user = User.builder().openid(openid).createTime(LocalDateTime.now()).build();
       userMapper.insert(user);
     }
-    redisTemplate.opsForValue().set("User_id" + user.getId(), user.getId(), 2, TimeUnit.HOURS);
+    redisTemplate
+        .opsForValue()
+        .set("User_id" + user.getId(), user.getId(), RedisConstant.REDIS_EXPIRE, TimeUnit.HOURS);
     return user;
   }
 }

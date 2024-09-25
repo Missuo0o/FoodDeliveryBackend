@@ -31,6 +31,7 @@ public class SetmealController {
     setmeal.setStatus(StatusConstant.ENABLE);
 
     List<Setmeal> list = setmealService.list(setmeal);
+
     return Result.success(list);
   }
 

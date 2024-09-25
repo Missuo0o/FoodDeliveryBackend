@@ -4,6 +4,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.missuo.common.constant.MessageConstant;
 import com.missuo.common.constant.PasswordConstant;
+import com.missuo.common.constant.RedisConstant;
 import com.missuo.common.constant.StatusConstant;
 import com.missuo.common.context.BaseContext;
 import com.missuo.common.exception.*;
@@ -96,7 +97,9 @@ public class EmployeeServiceImpl implements EmployeeService {
   public void startOrStop(Integer status, Long id) {
     Employee employee = Employee.builder().id(id).status(status).build();
     if (status == 1) {
-      redisTemplate.opsForValue().set("Employee_id" + id, id, 2, TimeUnit.HOURS);
+      redisTemplate
+          .opsForValue()
+          .set("Employee_id" + id, id, RedisConstant.REDIS_EXPIRE, TimeUnit.HOURS);
     }
     if (status == 0) {
       redisTemplate.delete("Employee_id" + id);
