@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,7 +49,6 @@ public class OrderServiceImpl implements OrderService {
   private final RabbitTemplate rabbitTemplate;
 
   @Override
-  @Transactional
   public OrderSubmitVO submitOrder(OrdersSubmitDTO ordersSubmitDTO) {
     // Check if the address book exists
     AddressBook addressBook = addressBookMapper.getById(ordersSubmitDTO.getAddressBookId());
@@ -56,8 +56,41 @@ public class OrderServiceImpl implements OrderService {
       throw new AddressBookBusinessException(MessageConstant.ADDRESS_BOOK_IS_NULL);
     }
 
-    // Check if the shopping cart is empty
     Long currentId = BaseContext.getCurrentId();
+
+    Orders orders;
+    synchronized (currentId.toString().intern()) {
+      OrderService proxy = (OrderService) AopContext.currentProxy();
+      orders = proxy.getOrders(ordersSubmitDTO, addressBook, currentId);
+    }
+    // Send a delayed message to the queue
+    MultDelayMessage<Long> longMultDelayMessage = new MultDelayMessage<>();
+    longMultDelayMessage.setDelayMillis(
+        Stream.generate(() -> 60000L).limit(15).collect(Collectors.toList()));
+    longMultDelayMessage.setData(orders.getId());
+
+    rabbitTemplate.convertAndSend(
+        MqConstant.DELAY_EXCHANGE,
+        MqConstant.DELAY_ORDER_ROUTING_KEY,
+        longMultDelayMessage,
+        message -> {
+          message.getMessageProperties().setDelayLong(longMultDelayMessage.removeNextDelay());
+          return message;
+        });
+
+    // Return the order information
+    return OrderSubmitVO.builder()
+        .id(orders.getId())
+        .orderTime(orders.getOrderTime())
+        .orderNumber(orders.getNumber())
+        .orderAmount(orders.getAmount())
+        .build();
+  }
+
+  @Transactional
+  public Orders getOrders(
+      OrdersSubmitDTO ordersSubmitDTO, AddressBook addressBook, Long currentId) {
+    // Check if the shopping cart is empty
     ShoppingCart shoppingCart = ShoppingCart.builder().id(currentId).build();
     List<ShoppingCart> shoppingCarts = shoppingCartMapper.list(shoppingCart);
 
@@ -96,31 +129,7 @@ public class OrderServiceImpl implements OrderService {
 
     // Delete the shopping cart
     shoppingCartMapper.deleteByUserId(currentId);
-
-    // Send a delayed message to the queue
-    MultDelayMessage<Long> longMultDelayMessage = new MultDelayMessage<>();
-    longMultDelayMessage.setDelayMillis(
-        Stream.generate(() -> 60000L).limit(15).collect(Collectors.toList()));
-    longMultDelayMessage.setData(orders.getId());
-
-    System.out.println(longMultDelayMessage);
-
-    rabbitTemplate.convertAndSend(
-        MqConstant.DELAY_EXCHANGE,
-        MqConstant.DELAY_ORDER_ROUTING_KEY,
-        longMultDelayMessage,
-        message -> {
-          message.getMessageProperties().setDelayLong(longMultDelayMessage.removeNextDelay());
-          return message;
-        });
-
-    // Return the order information
-    return OrderSubmitVO.builder()
-        .id(orders.getId())
-        .orderTime(orders.getOrderTime())
-        .orderNumber(orders.getNumber())
-        .orderAmount(orders.getAmount())
-        .build();
+    return orders;
   }
 
   public OrderPaymentVO payment(OrdersPaymentDTO ordersPaymentDTO) throws Exception {

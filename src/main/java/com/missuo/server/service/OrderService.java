@@ -2,6 +2,8 @@ package com.missuo.server.service;
 
 import com.missuo.common.result.PageResult;
 import com.missuo.pojo.dto.*;
+import com.missuo.pojo.entity.AddressBook;
+import com.missuo.pojo.entity.Orders;
 import com.missuo.pojo.vo.OrderPaymentVO;
 import com.missuo.pojo.vo.OrderStatisticsVO;
 import com.missuo.pojo.vo.OrderSubmitVO;
@@ -37,4 +39,6 @@ public interface OrderService {
   void complete(Long id);
 
   void reminder(Long id);
+
+  Orders getOrders(OrdersSubmitDTO ordersSubmitDTO, AddressBook addressBook, Long currentId);
 }
