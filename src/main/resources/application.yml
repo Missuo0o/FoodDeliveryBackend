@@ -29,6 +29,9 @@ spring:
     listener:
       simple:
         prefetch: ${spring.rabbitmq.listener.simple.prefetch}
+        acknowledge-mode: ${spring.rabbitmq.listener.simple.acknowledge-mode}
+        retry:
+          enabled: ${spring.rabbitmq.listener.simple.retry.enabled}
 
 #  main:
 #    allow-circular-references: true
