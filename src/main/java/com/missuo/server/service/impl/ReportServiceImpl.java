@@ -97,11 +97,11 @@ public class ReportServiceImpl implements ReportService {
           Map<String, Object> map = new HashMap<>();
           map.put("beginTime", beginTime);
           map.put("endTime", endTime);
-          Integer orderCount = userMapper.countByMap(map);
+          Integer orderCount = orderMapper.countByMap(map);
           orderCountList.add(orderCount);
           // Query the total number of completed orders per day
           map.put("status", Orders.COMPLETED);
-          Integer completedOrderCount = userMapper.countByMap(map);
+          Integer completedOrderCount = orderMapper.countByMap(map);
           completedOrderCountList.add(completedOrderCount);
         });
 
