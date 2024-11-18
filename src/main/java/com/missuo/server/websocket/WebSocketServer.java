@@ -7,8 +7,8 @@ import jakarta.websocket.Session;
 import jakarta.websocket.server.PathParam;
 import jakarta.websocket.server.ServerEndpoint;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class WebSocketServer {
 
-  private static final Map<String, Session> sessionMap = new HashMap<>();
+  private static final Map<String, Session> sessionMap = new ConcurrentHashMap<>();
 
   //  private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
